@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#define Max 100
 //Not working with files yet.
 
 // a struct to read and write
@@ -16,36 +17,29 @@ enum permissions{ADMIN,ATENDENTE};
 
 struct users{
     int id;
-    char login[100];
-    char email[100];
-    char password[20];
-    enum permissions user_permissions;
+    char login[Max];
+    char password[Max];
+    int user_permissions;
 };
 
-bool check_user(char *login , char *password){
+bool check_user(struct users *current_user){
 
     //gets information from database;
     //for now just a variable
-    struct users test_user;
-    test_user.id=1;
-    strcpy(test_user.login, "andres");
-    strcpy(test_user.password, "123456");
-    test_user.user_permissions=1;
+    struct users test_user={1,"a","1",0};
+    printf("%s \n%s ",  current_user->login, test_user.login);
 
-    printf("%s and %s \n", login, password);
-    if(login==test_user.login && password==test_user.password){
-
-        return true;
+   if(current_user->login == "a"){
+        return 1;
     }else{
-    return false;
+    return 0;
     }
-
-
 }
-void main ()
+int main ()
 {
     //testuser
-    struct users current_user;
+    struct users *puser, current_user;
+    puser=&current_user;
     int i=1;
 ////    FILE *arq;
 //
@@ -62,11 +56,13 @@ void main ()
     while (i != 0)
        {
         printf("Login: \n");
-        scanf("%s",&current_user.login);
+        scanf("%s",puser->login);
         printf("Password: \n");
-        scanf("%s",&current_user.password);
+        scanf("%s", puser->password);
 
-        printf("User found %d ", check_user(*current_user.login, *current_user.password) );
+        puser->id=1;
+        puser->user_permissions= 0;
+        printf("User found %d ", check_user(puser) );
 
 
 
@@ -89,5 +85,5 @@ void main ()
 //    fclose (arq);
 
  //    FILE *arq;
-
+return 1;
 }
