@@ -1,7 +1,8 @@
 # depslib dependency file v1.0
-1573103114 source:d:\documents\uni\2 periodo\pim\programa-pim\main.c
+1573180917 source:d:\documents\uni\2 periodo\pim\programa-pim\main.c
 	<stdio.h>
 	<stdlib.h>
 	<stdbool.h>
 	<string.h>
+	<conio.h>
 
