@@ -59,7 +59,7 @@ struct pedidos{
 
 bool check_user(struct users *current_user, int *logout);
 void cadastrar_pedido(struct users *atendente,  struct clientes *cliente);
-void check_pedido(char cpf, struct clientes *cliente);
+int check_cliente(char cpf[], struct clientes *cliente);
 int main ()
 {
     //testuser
@@ -117,6 +117,9 @@ int main ()
 			break;
 		}
 	   }
+
+    return 0;
+}
 bool check_user(struct users *current_user, int *logout){
 
     //gets information from database;
@@ -130,18 +133,28 @@ bool check_user(struct users *current_user, int *logout){
     }
 }
 
-void cadastrar_pedido(struct users *atendente, struct clientes *cliente){
+void cadastrar_pedido(struct users *atendente, struct clientes *pcliente){
     char cpf[Max];
     printf("O Cliente esta cadastrado?\n inserir CPF: ");
     scanf("%s", cpf);
-    check_cliente(cpf, cliente);
+    printf("%d", check_cliente(cpf, pcliente));
 }
 
 
-int check_pedido(char cpf, struct clientes *cliente){
+int check_cliente(char cpf[], struct clientes *pcliente){
     int i=0;
-    for(;cliente==0;i++ ){
-
+    struct clientes test_cliente[2]= {
+    {1,"789456","andres","Manaus","987456123"},
+    {1,"123456","simon","Peru","987456111"}
+    };
+//not working
+    for(;&test_cliente[i]==0;i++ ){
+            if(strcmp(cpf,test_cliente[i].CPF)==0){
+                printf("cliente no sistema!\n");
+                return 1;
+            }
+            printf("%d\n",i);
     }
-    return 0;
+    printf("cliente sem registro\n");
+ return 0;
 }
