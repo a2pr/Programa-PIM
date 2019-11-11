@@ -31,8 +31,14 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="functions.h">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="types.h">
+			<Option target="&lt;{~None~}&gt;" />
 		</Unit>
 		<Extensions>
 			<code_completion />

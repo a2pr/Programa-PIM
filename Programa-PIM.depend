@@ -1,8 +1,18 @@
 # depslib dependency file v1.0
-1573364868 source:d:\documents\uni\2 periodo\pim\programa-pim\main.c
+1573449413 source:d:\documents\uni\2 periodo\pim\programa-pim\main.c
 	<stdio.h>
 	<stdlib.h>
 	<stdbool.h>
 	<string.h>
 	<conio.h>
+	"functions.h"
+	"types.h"
+
+1573450106 d:\documents\uni\2 periodo\pim\programa-pim\functions.h
+	"types.h"
+
+1573447054 d:\documents\uni\2 periodo\pim\programa-pim\types.h
+
+1573449076 d:\documents\uni\2 periodo\pim\programa-pim\test-variables.h
+	"types.h"
 
