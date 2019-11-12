@@ -14,6 +14,8 @@ int main ()
     puser=&current_user;
     struct clientes *pcliente, cliente ;
     pcliente= &cliente;
+    struct pedidos *pcu_pedido,cu_pedido;
+    pcu_pedido=&cu_pedido;
     int i=1;
 	int step=0;
 	int *plogout, logout=0;
@@ -47,7 +49,7 @@ int main ()
 		char cpf[Max];
 		switch(step){
 			case 1:
-			    cadastrar_pedido(puser, pcliente);
+			    cadastrar_pedido(puser, pcliente, pcu_pedido);
 			break;
 			case 2:
 

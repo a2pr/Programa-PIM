@@ -34,11 +34,172 @@ int check_cliente(char cpf[], struct clientes *pcliente){
     printf("cliente sem registro\n");
  return 0;
 }
-void cadastrar_pedido(struct users *atendente, struct clientes *pcliente){
+
+void choose_pizza(struct pedidos *ppedido){
+    int i, opt, Qtd, lenght;
+    //test pizzas
+    struct produtos test_producto[]={
+        {
+            15,"dough", 2.55, 25
+        },
+        {
+            18,"chesse", 2.55, 15
+        },
+        {
+            25,"tomatoes", 4.55, 50
+        }
+    };
+    struct items test_pizzas[]={
+        {
+            .id=10,
+            .nome= "Pizza portuguesa",
+            .prize= 15,
+            .produto[0]= test_producto[0],
+            .quantidade=4
+        },
+        {
+            .id=11,
+            .nome= "Pizza calabresa",
+            .prize= 15,
+            .produto[0]= test_producto[1],
+            .quantidade=4
+        },
+        {
+            .id=12,
+            .nome= "Pizza 4 queijos",
+            .prize= 15,
+            .produto= {test_producto[0],test_producto[2]},
+            .quantidade=4
+        },
+         {
+            .id=14,
+            .nome= "Pizza Doce",
+            .prize= 50,
+            .produto= {test_producto[0],test_producto[2]},
+            .quantidade=0
+        }
+    };
+
+    lenght= sizeof(test_pizzas)/sizeof(test_pizzas[0]);
+    system("@cls||clear");
+    printf("----------Nossas pizzas disponivels-----\n");
+    for(i=0; i<lenght; i++){
+
+        if(test_pizzas[i].quantidade!=0){
+            printf(" %d-> %s , prize: %f \n", i+1, test_pizzas[i].nome, test_pizzas[i].prize);
+        }
+    }
+        printf("Escolha sua pizza: ");
+        scanf("%d", &opt);
+        printf("\nQuantidade desejada?");
+        scanf("%d", &Qtd);
+
+    if(opt && Qtd!=0){
+        double total=0;
+        for(i=0; i<Qtd; i++){
+            ppedido->items_pedido[i]= test_pizzas[opt-1];
+            total+= test_pizzas[opt-1].prize;
+
+        }
+        ppedido->prize=total;
+    }
+    printf("\n%d pizzas adicionadas\n", Qtd);
+}
+
+void choose_bebida(struct pedidos *ppedido){
+    int i,j,used, opt, Qtd, lenght,lenght_total;
+    struct produtos test_producto[]={
+        {
+            30,"Monster", 2.55, 100
+        },
+        {
+            31,"Coca", 2.55, 20
+        },
+        {
+            35,"pepsi", 4.55, 20
+        }
+    };
+
+    struct items test_bebidas[]={
+        {
+            .id=20,
+            .nome= "Monster",
+            .prize= 8.66,
+            .produto[0]= test_producto[0],
+            .quantidade=100
+        },
+        {
+            .id=21,
+            .nome= "Coca-Cola",
+            .prize= 4.55,
+            .produto[0]= test_producto[1],
+            .quantidade=20
+        },
+        {
+            .id=22,
+            .nome= "Pepsi",
+            .prize= 4.55,
+            .produto= {test_producto[2]},
+            .quantidade=20
+        }
+    };
+
+    lenght= sizeof(test_bebidas)/sizeof(test_bebidas[0]);
+    lenght_total= sizeof(ppedido->items_pedido)/sizeof(ppedido->items_pedido[0]);
+    printf("\n----------Nossas bebidas disponivels-----\n");
+
+    for(i=0; i<lenght; i++){
+
+        if(test_bebidas[i].quantidade!=0){
+            printf(" %d-> %s , prize: %f \n", i+1, test_bebidas[i].nome, test_bebidas[i].prize);
+        }
+    }
+    printf("Escolha sua bebida: ");
+    scanf("%d", &opt);
+    printf("\nQuantidade desejada?");
+    scanf("%d", &Qtd);
+
+//checks pedido last added space index
+    for(j=0;j<lenght_total;j++){
+        if(!ppedido->items_pedido[j].id){
+            used=j;
+            break;
+        }
+    }
+//checks if opt and qtd not null
+    if(opt && Qtd!=0){
+        double total=0;
+        int check=Qtd+used;
+        //starts loop in first unsued space in pedido
+        for(i=used; i<check; i++){
+                if(check<=lenght_total){
+                     ppedido->items_pedido[i]= test_bebidas[opt-1];
+                    total+= test_bebidas[opt-1].prize;
+                }
+        }
+        ppedido->prize=total;
+    }
+    printf("\n%d Bebidas adicionadas\n", Qtd);
+}
+
+void cadastrar_pedido(struct users *atendente, struct clientes *pcliente,  struct pedidos *ppedido){
+    int length,i;
+
+    choose_pizza(ppedido);
+    choose_bebida(ppedido);
+
+    //showing results
+    length=sizeof(ppedido->items_pedido)/sizeof(ppedido->items_pedido[0]);
+    for(i=0;i< length;i++){
+        if(ppedido->items_pedido[i].id){
+            printf(" %s \n",ppedido->items_pedido[i].nome );
+        }
+    }
+
+    printf("Conta ate agora: %f \n",ppedido->prize);
+    //adding cliente to pedido
     char cpf[Max];
-    struct pedidos *ppedido, pedidos;
-    ppedido=&pedidos;
-    printf("O Cliente esta cadastrado?\n inserir CPF: ");
+    printf("\nO Cliente esta cadastrado?\n inserir CPF: ");
     scanf("%s", cpf);
     if( check_cliente(cpf, pcliente) ){
         ppedido->cliente= *pcliente;
