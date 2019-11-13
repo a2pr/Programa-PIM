@@ -48,6 +48,7 @@ double get_multiplier(int i){
         break;
     }
 }
+
 void choose_pizza(struct pedidos *ppedido){
     int i, opt, Qtd, tamanho, lenght;
     //test pizzas
@@ -123,7 +124,7 @@ void choose_pizza(struct pedidos *ppedido){
         double multiplier= get_multiplier(test_pizzas[opt-1].tamanho);
         for(i=0; i<Qtd; i++){
             ppedido->items_pedido[i]= test_pizzas[opt-1];
-
+            ppedido->items_pedido[i].quantidade=1;
             total+= test_pizzas[opt-1].prize*multiplier;
 
         }
@@ -205,7 +206,8 @@ void choose_bebida(struct pedidos *ppedido){
         //starts loop in first unsued space in pedido
         for(i=used; i<check; i++){
                 if(check<=lenght_total){
-                     ppedido->items_pedido[i]= test_bebidas[opt-1];
+                    ppedido->items_pedido[i]= test_bebidas[opt-1];
+                    ppedido->items_pedido[i].quantidade=1;
                     total+= test_bebidas[opt-1].prize;
                 }
         }
@@ -214,21 +216,132 @@ void choose_bebida(struct pedidos *ppedido){
     printf("\n%d Bebidas adicionadas\n", Qtd);
 }
 
+
+bool check_en_estoque(struct pedidos *ppedido){
+    int i,j,length_e, length_p;
+
+    struct produtos test_producto[]={
+        {
+            15,"dough", 2.55, 25
+        },
+        {
+            18,"chesse", 2.55, 15
+        },
+        {
+            25,"tomatoes", 4.55, 50
+        }
+    };
+
+    struct items test_estoque[]={
+        {
+            .id=10,
+            .nome= "Pizza portuguesa",
+            .prize= 15,
+            .produto[0]= test_producto[0],
+            .quantidade=5,
+            .promotion= true
+        },
+        {
+            .id=11,
+            .nome= "Pizza calabresa",
+            .prize= 15,
+            .produto[0]= test_producto[1],
+            .quantidade=3,
+            .promotion= false
+        },
+        {
+            .id=12,
+            .nome= "Pizza 4 queijos",
+            .prize= 15,
+            .produto= {test_producto[0],test_producto[2]},
+            .quantidade=2,
+            .promotion= false
+        },
+         {
+            .id=14,
+            .nome= "Pizza Doce",
+            .prize= 50,
+            .produto= {test_producto[0],test_producto[2]},
+            .quantidade=0,
+            .promotion= false
+        },
+        {
+            .id=20,
+            .nome= "Monster",
+            .prize= 8.66,
+            .produto[0]= test_producto[0],
+            .quantidade=100,
+            .tamanho=1,
+            .promotion= true
+        },
+        {
+            .id=21,
+            .nome= "Coca-Cola",
+            .prize= 4.55,
+            .produto[0]= test_producto[1],
+            .quantidade=20,
+            .tamanho=1,
+            .promotion= false
+        },
+        {
+            .id=22,
+            .nome= "Pepsi",
+            .prize= 4.55,
+            .produto= {test_producto[2]},
+            .quantidade=2,
+            .tamanho=1,
+            .promotion= false
+        }
+    };
+
+    length_e=sizeof(test_estoque)/sizeof(test_estoque[0]);
+    length_p=sizeof(ppedido->items_pedido)/sizeof(ppedido->items_pedido[0]);
+
+    for(i=0; i<length_p;i++){
+        for(j=0; j<length_e;j++){
+            if(ppedido->items_pedido[i].id == test_estoque[j].id){
+                test_estoque[j].quantidade-=ppedido->items_pedido[i].quantidade;
+                if(test_estoque[j].quantidade<=0 ){
+                    return false;
+                }
+            }
+        }
+    }
+    return true;
+
+}
+
 void cadastrar_pedido(struct users *atendente, struct clientes *pcliente,  struct pedidos *ppedido){
-    int length,i;
+    bool pedido_ok=false;
+    while(!pedido_ok){
+        int length,i;
 
-    choose_pizza(ppedido);
-    choose_bebida(ppedido);
+        //choose from menu
+        choose_pizza(ppedido);
+        choose_bebida(ppedido);
 
-    //showing results
-    length=sizeof(ppedido->items_pedido)/sizeof(ppedido->items_pedido[0]);
-    for(i=0;i< length;i++){
-        if(ppedido->items_pedido[i].id){
-            printf("\n %s\n",ppedido->items_pedido[i].nome );
+        //showing results
+        length=sizeof(ppedido->items_pedido)/sizeof(ppedido->items_pedido[0]);
+        for(i=0;i< length;i++){
+            if(ppedido->items_pedido[i].id){
+                printf("\n %s quantidade de items: %d ; custo-> %.2f\n",ppedido->items_pedido[i].nome, ppedido->items_pedido[i].quantidade, ppedido->items_pedido[i].prize );
+            }
+        }
+        printf("-------------------\n");
+        printf("Conta ate agora: %.2f \n",ppedido->prize);
+        // check in estoque if values are available
+
+        if(!check_en_estoque(ppedido)){
+
+                    memset(ppedido->items_pedido,0,10*sizeof(struct items));
+
+            printf("\n Items de pedido fora de estoque\nPress ENTER key to go back to menu\n");
+            getch();
+        }else{
+            pedido_ok= true;
         }
     }
 
-    printf("Conta ate agora: %.2f \n",ppedido->prize);
     //adding cliente to pedido
     char cpf[Max];
     printf("\nO Cliente esta cadastrado?\n inserir CPF: ");
