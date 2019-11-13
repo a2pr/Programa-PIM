@@ -14,11 +14,12 @@ bool check_user(struct users *current_user, int *logout){
     	return 0;
     }
 }
-int check_cliente(char cpf[], struct clientes *pcliente){
+
+bool check_cliente(char cpf[], struct clientes *pcliente){
     int i=0;
     int length;
     //for testing purpose
-    struct clientes test_cliente[2]= {
+    struct clientes test_cliente[3]= {
     {1,"789456","andres","Manaus","987456123"},
     {1,"123456","simon","Peru","987456111"}
     };
@@ -28,11 +29,11 @@ int check_cliente(char cpf[], struct clientes *pcliente){
             if(strcmp(cpf,test_cliente[i].CPF)==0){
                 printf("cliente no sistema!\n");
                 *pcliente= test_cliente[i];
-                return 1;
+                return true;
             }
     }
     printf("cliente sem registro\n");
- return 0;
+ return false;
 }
 
 double get_multiplier(int i){
@@ -311,6 +312,45 @@ bool check_en_estoque(struct pedidos *ppedido){
 
 }
 
+void cadastrar_cliente(struct clientes *pcliente, char cpf[]){
+    int i, length;
+    //for testing
+    struct clientes test_cliente[3]= {
+    {1,"789456","andres","Manaus","987456123"},
+    {1,"123456","simon","Peru","987456111"}
+    };
+
+    length=sizeof(test_cliente)/sizeof(test_cliente[0]);
+    for(i=0;i<length;i++){
+        if(!test_cliente[i].id){
+            pcliente->id=i;
+            break;
+        }
+    }
+    strcpy(pcliente->CPF, cpf);
+    printf("\n Cliente não cadastrado!\nPress ENTER key para cadastrar\n");
+    getch();
+    system("@cls||clear");
+
+    printf("\nNome do cliente: \n");
+    scanf("%s", pcliente->nome);
+    printf("\nEndereçõ do cliente: \n");
+    scanf("%s", pcliente->enderezo);
+    printf("\nTelefone do cliente: \n");
+    scanf("%s", pcliente->telefone);
+
+    /*
+        Here should be added to database
+    */
+
+    printf("cliente cadastrado !\n");
+
+}
+
+void set_motoqueiro( struct pedidos *ppedido){
+
+}
+
 void cadastrar_pedido(struct users *atendente, struct clientes *pcliente,  struct pedidos *ppedido){
     bool pedido_ok=false;
     while(!pedido_ok){
@@ -348,8 +388,17 @@ void cadastrar_pedido(struct users *atendente, struct clientes *pcliente,  struc
     scanf("%s", cpf);
     if( check_cliente(cpf, pcliente) ){
         ppedido->cliente= *pcliente;
+        printf("Cliente %s asignado !\n", ppedido->cliente.nome);
     }
 
+    cadastrar_cliente(pcliente, cpf);
+
+    printf("\n cliente: %s cpf: %s \n", pcliente->nome, pcliente->CPF);
+
+    set_motoqueiro(ppedido);
+
+    printf("Press ENTER key to go back to the menu\n");
+    getch();
 }
 
 
