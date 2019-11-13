@@ -397,6 +397,20 @@ void set_motoqueiro( struct pedidos *ppedido){
 
 }
 
+void set_time( struct pedidos *ppedido){
+    int i,length;
+    double time;
+    length=sizeof(ppedido->items_pedido)/sizeof(ppedido->items_pedido[0]);
+    //another logic for this should be added
+    for(i=0;i<length;i++){
+        if(!ppedido->items_pedido[i].id){
+            break;
+        }
+    }
+    time= (i*20)/60;
+    printf("Demorara %.3f horas para chegar seu pedido", time);
+
+}
 void cadastrar_pedido(struct users *atendente, struct clientes *pcliente,  struct pedidos *ppedido){
     bool pedido_ok=false;
     while(!pedido_ok){
@@ -443,6 +457,8 @@ void cadastrar_pedido(struct users *atendente, struct clientes *pcliente,  struc
 
 
     set_motoqueiro(ppedido);
+
+    set_time(ppedido);
 
     printf("Press ENTER key to go back to the menu\n");
     getch();
