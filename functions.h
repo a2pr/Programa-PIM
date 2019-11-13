@@ -35,8 +35,21 @@ int check_cliente(char cpf[], struct clientes *pcliente){
  return 0;
 }
 
+double get_multiplier(int i){
+     switch(i){
+        case 1:
+           return 1;
+        break;
+        case 2:
+            return 1.15;
+        break;
+        case 3:
+            return 1.3;
+        break;
+    }
+}
 void choose_pizza(struct pedidos *ppedido){
-    int i, opt, Qtd, lenght;
+    int i, opt, Qtd, tamanho, lenght;
     //test pizzas
     struct produtos test_producto[]={
         {
@@ -55,28 +68,32 @@ void choose_pizza(struct pedidos *ppedido){
             .nome= "Pizza portuguesa",
             .prize= 15,
             .produto[0]= test_producto[0],
-            .quantidade=4
+            .quantidade=4,
+            .promotion= true
         },
         {
             .id=11,
             .nome= "Pizza calabresa",
             .prize= 15,
             .produto[0]= test_producto[1],
-            .quantidade=4
+            .quantidade=4,
+            .promotion= false
         },
         {
             .id=12,
             .nome= "Pizza 4 queijos",
             .prize= 15,
             .produto= {test_producto[0],test_producto[2]},
-            .quantidade=4
+            .quantidade=4,
+            .promotion= false
         },
          {
             .id=14,
             .nome= "Pizza Doce",
             .prize= 50,
             .produto= {test_producto[0],test_producto[2]},
-            .quantidade=0
+            .quantidade=0,
+            .promotion= false
         }
     };
 
@@ -86,19 +103,28 @@ void choose_pizza(struct pedidos *ppedido){
     for(i=0; i<lenght; i++){
 
         if(test_pizzas[i].quantidade!=0){
-            printf(" %d-> %s , prize: %f \n", i+1, test_pizzas[i].nome, test_pizzas[i].prize);
+            printf(" %d-> %s , prize: %.2f \n", i+1, test_pizzas[i].nome, test_pizzas[i].prize);
         }
     }
         printf("Escolha sua pizza: ");
         scanf("%d", &opt);
+        printf("\nTamanho da pizza?");
+        printf("\n1- Pequena\n");
+        printf("\n2- Mediana\n");
+        printf("\n3- Grande\n\n");
+        scanf("%d", &tamanho);
         printf("\nQuantidade desejada?");
         scanf("%d", &Qtd);
 
+
     if(opt && Qtd!=0){
         double total=0;
+        test_pizzas[opt-1].tamanho=tamanho;
+        double multiplier= get_multiplier(test_pizzas[opt-1].tamanho);
         for(i=0; i<Qtd; i++){
             ppedido->items_pedido[i]= test_pizzas[opt-1];
-            total+= test_pizzas[opt-1].prize;
+
+            total+= test_pizzas[opt-1].prize*multiplier;
 
         }
         ppedido->prize=total;
@@ -126,21 +152,27 @@ void choose_bebida(struct pedidos *ppedido){
             .nome= "Monster",
             .prize= 8.66,
             .produto[0]= test_producto[0],
-            .quantidade=100
+            .quantidade=100,
+            .tamanho=1,
+            .promotion= true
         },
         {
             .id=21,
             .nome= "Coca-Cola",
             .prize= 4.55,
             .produto[0]= test_producto[1],
-            .quantidade=20
+            .quantidade=20,
+            .tamanho=1,
+            .promotion= false
         },
         {
             .id=22,
             .nome= "Pepsi",
             .prize= 4.55,
             .produto= {test_producto[2]},
-            .quantidade=20
+            .quantidade=20,
+            .tamanho=1,
+            .promotion= false
         }
     };
 
@@ -151,7 +183,7 @@ void choose_bebida(struct pedidos *ppedido){
     for(i=0; i<lenght; i++){
 
         if(test_bebidas[i].quantidade!=0){
-            printf(" %d-> %s , prize: %f \n", i+1, test_bebidas[i].nome, test_bebidas[i].prize);
+            printf(" %d-> %s , prize: %.2f \n", i+1, test_bebidas[i].nome, test_bebidas[i].prize);
         }
     }
     printf("Escolha sua bebida: ");
@@ -177,7 +209,7 @@ void choose_bebida(struct pedidos *ppedido){
                     total+= test_bebidas[opt-1].prize;
                 }
         }
-        ppedido->prize=total;
+        ppedido->prize+=total;
     }
     printf("\n%d Bebidas adicionadas\n", Qtd);
 }
@@ -192,11 +224,11 @@ void cadastrar_pedido(struct users *atendente, struct clientes *pcliente,  struc
     length=sizeof(ppedido->items_pedido)/sizeof(ppedido->items_pedido[0]);
     for(i=0;i< length;i++){
         if(ppedido->items_pedido[i].id){
-            printf(" %s \n",ppedido->items_pedido[i].nome );
+            printf("\n %s\n",ppedido->items_pedido[i].nome );
         }
     }
 
-    printf("Conta ate agora: %f \n",ppedido->prize);
+    printf("Conta ate agora: %.2f \n",ppedido->prize);
     //adding cliente to pedido
     char cpf[Max];
     printf("\nO Cliente esta cadastrado?\n inserir CPF: ");

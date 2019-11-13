@@ -34,6 +34,8 @@ struct items{
     double prize;
     struct produtos produto[Max];
     int quantidade;
+    int tamanho; //1- pequena; 2- mediana; 3- grande;
+    bool promotion; // true or false;
 };
 
 struct clientes{

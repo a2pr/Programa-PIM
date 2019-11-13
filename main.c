@@ -60,7 +60,7 @@ int main ()
 
 			break;
 			case 3:
-			    show_menu();
+			    show_menu();//change
 			break;
 			case 4:
 			    get_clientes();
