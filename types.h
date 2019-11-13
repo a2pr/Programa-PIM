@@ -26,6 +26,7 @@ struct motoqueiros{
     char nome[Max];
     char telefone[Max];
     int sede;
+    bool disponivel;
 };
 
 struct items{

@@ -348,6 +348,52 @@ void cadastrar_cliente(struct clientes *pcliente, char cpf[]){
 }
 
 void set_motoqueiro( struct pedidos *ppedido){
+    int length, j;
+    bool opt=false;
+    //for testing
+    struct motoqueiros test_list_motoqueiros[5]={
+        {
+          .id=1,
+          .nome="Julio",
+          .telefone="789456",
+          .sede=1,
+          .disponivel= true
+        },
+        {
+            .id=2,
+          .nome="Manuel",
+          .telefone="4568",
+          .sede=1,
+          .disponivel= true
+        },
+        {
+          .id=3,
+          .nome="Ricardo",
+          .telefone="4568456",
+          .sede=2,
+          .disponivel= false
+        },
+        {
+          .id=4,
+          .nome="Pepega",
+          .telefone="4568456",
+          .sede=1,
+          .disponivel= true
+        }
+    };
+
+    length=sizeof(test_list_motoqueiros)/sizeof(test_list_motoqueiros[0]);
+
+    while(!opt){
+        //pseudo random number assign
+        j=rand()%length;
+        //missing condition for sede
+        if(test_list_motoqueiros[j].id && test_list_motoqueiros[j].disponivel){
+            ppedido->motoqueiro=test_list_motoqueiros[j];
+            opt=true;
+        }
+    }
+    printf("motoqueiro %s assinado\n ",ppedido->motoqueiro.nome );
 
 }
 
@@ -389,11 +435,12 @@ void cadastrar_pedido(struct users *atendente, struct clientes *pcliente,  struc
     if( check_cliente(cpf, pcliente) ){
         ppedido->cliente= *pcliente;
         printf("Cliente %s asignado !\n", ppedido->cliente.nome);
+    }else{
+        cadastrar_cliente(pcliente, cpf);
+        printf("\n cliente: %s cpf: %s \n", pcliente->nome, pcliente->CPF);
+
     }
 
-    cadastrar_cliente(pcliente, cpf);
-
-    printf("\n cliente: %s cpf: %s \n", pcliente->nome, pcliente->CPF);
 
     set_motoqueiro(ppedido);
 
