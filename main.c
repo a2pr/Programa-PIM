@@ -52,11 +52,24 @@ int main ()
 			    cadastrar_pedido(puser, pcliente, pcu_pedido);
 			break;
 			case 2:
-
-			    printf("O Cliente esta cadastrado?\n inserir CPF: ");
+			    printf("O Cliente esta cadastrado?\n Inserir 0 se não ou se é cadastrado inserir CPF: ");
                 scanf("%s", cpf);
-                check_cliente(cpf, pcliente);
-                check_for_pedido(pcliente);
+
+                if(strcmp(cpf,"0")==0){
+                    system("@cls||clear");
+                    break;
+                }
+                if(check_cliente(cpf, pcliente)){
+
+                    //Aqui vai trouzer pedido del cliente
+                    check_for_pedido(pcliente, cpf);
+                }else{
+                    printf("\nCliente nao cadastrado na base dados !");
+                    printf("\nPress ENTER key to go back to the menu\n");
+                    getch();
+                    system("@cls||clear");
+                }
+
 
 			break;
 			case 3:

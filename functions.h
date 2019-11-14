@@ -48,6 +48,7 @@ double get_multiplier(int i){
             return 1.3;
         break;
     }
+    return 0;
 }
 
 void choose_pizza(struct pedidos *ppedido){
@@ -422,6 +423,7 @@ void set_time( struct pedidos *ppedido){
 
 
 }
+
 void cadastrar_pedido(struct users *atendente, struct clientes *pcliente,  struct pedidos *ppedido){
     bool pedido_ok=false;
     while(!pedido_ok){
@@ -470,46 +472,127 @@ void cadastrar_pedido(struct users *atendente, struct clientes *pcliente,  struc
     set_motoqueiro(ppedido);
 
     set_time(ppedido);
+    //set sede by global variable
 
-    printf("Press ENTER key to go back to the menu\n");
+    //Pedido vai ser mandado para a base de dados;
+
+    printf("\n\n Pedido Cadastrado !");
+    printf("\nPress ENTER key to go back to the menu\n");
     getch();
+    system("@cls||clear");
 }
 
 
 
 //needs to return pedidos by client
-void check_for_pedido(struct clientes *cliente){
+void check_for_pedido(struct clientes *pcliente, char cpf[]){
+    int i,k,length_p, length_i;
     //for testing
-    struct pedidos test[]={
+    struct produtos test_producto[]={
         {
-        .cliente= {1,
-            "789456",
-            "andres",
-            "Manaus",
-            "987456123"
+            15,"dough", 2.55, 25
         },
-        .items_pedido[0]= {
-            .id=1 ,
-            .nome= "pizza A",
-            .prize= 22.5 ,
-            .produto[0]={
-                1,
-                "item A",
-                5,
-                10
-            },
-            .quantidade=5
-         },
-        .prize= 22.1 ,
-        .motoqueiro={
-            1,
-            "david",
-            "987654",
-            1
+        {
+            18,"chesse", 2.55, 15
         },
-        2
+        {
+            25,"tomatoes", 4.55, 50
         }
     };
+
+    struct items test_item[2]={
+        {
+            .id=10,
+            .nome= "Pizza portuguesa",
+            .prize= 15,
+            .produto[0]= test_producto[0],
+            .quantidade=4,
+            .promotion= true
+        },
+        {
+            .id=11,
+            .nome= "Pizza calabresa",
+            .prize= 15,
+            .produto[0]= test_producto[1],
+            .quantidade=4,
+            .promotion= false
+        }
+
+    };
+
+    struct clientes test_cliente[2]={
+        {
+            .id=1,
+            .CPF="789456",
+            .nome="andres",
+            .enderezo="Manaus",
+            .telefone="987456123"
+        },
+        {
+            .id=2,
+            .CPF="7123456",
+            .nome="Simon",
+            .enderezo="Peru",
+            .telefone="9874565698"
+        }
+
+    };
+
+    struct motoqueiros test_motoqueiro[2]={
+                  {
+                     .id=1,
+                    .nome="Julio",
+                    .telefone="789456",
+                    .sede=1,
+                    .disponivel= true
+
+                  },
+                   {
+                    .id=2,
+                  .nome="Manuel",
+                  .telefone="4568",
+                  .sede=1,
+                  .disponivel= true
+                }
+            };
+
+    struct pedidos test_pedidos[] = {
+            {
+                .cliente= test_cliente[0],
+                .items_pedido[0]= test_item[0],
+                .prize= 15 ,
+                .motoqueiro= test_motoqueiro[0],
+                .atendente= 2,
+                .sede=1
+            },
+            {
+                .cliente= test_cliente[1],
+                .items_pedido[0]= test_item[1],
+                .prize= 15 ,
+                .motoqueiro= test_motoqueiro[1],
+                .atendente= 2,
+                .sede=1
+            }
+        };
+
+    length_p=sizeof(test_pedidos)/sizeof(test_pedidos[0]);
+    for(i=0; i<length_p;i++){
+        if(strcmp(cpf,test_pedidos[i].cliente.CPF)==0){
+                length_i=sizeof(test_pedidos[i].items_pedido)/sizeof(test_pedidos[i].items_pedido[0]);
+                printf("\n Para esse cpf temos os siguientes pedidos feitos\n");
+                for(k=0;k<length_i;k++){
+                    if(test_pedidos[i].items_pedido[k].id){
+                        printf("\n Pedido %d: \n%s ----> prize: %.2f\n",k+1, test_pedidos[i].items_pedido[k].nome,test_pedidos[i].items_pedido[k].prize );
+                    }
+
+                }
+                printf("-----------");
+
+        }
+    }
+    printf("\nPress ENTER key to go back to the menu\n");
+    getch();
+    system("@cls||clear");
 }
 
 void get_menu(struct items (*menu)[Max]){
