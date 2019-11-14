@@ -633,21 +633,172 @@ void get_menu(struct items (*menu)[Max]){
     }
     printf("values assign !");
 }
-void show_menu(){
-    system("@cls||clear");
-    int opt,i, length;
-    struct items (*pmenu)[Max], menu[Max];
-    pmenu= &menu;
-    get_menu(pmenu);
-    length= sizeof(menu)/sizeof(menu[0]);
-    printf("%s", menu[1].nome);
-    printf("---------Menu------\n");
-    for(i=0;i< length-1; i++){
-        printf("%d- %s ->>>>>> %f\n",i, menu[i].nome, menu[i].prize);
+
+void cadastrar_pedido_promotion(struct users *atendente, struct clientes *pcliente,  struct pedidos *ppedido){
+     bool pedido_ok=false;
+    while(!pedido_ok){
+       int length,i;
+        //showing results
+        length=sizeof(ppedido->items_pedido)/sizeof(ppedido->items_pedido[0]);
+        for(i=0;i< length;i++){
+            if(ppedido->items_pedido[i].id){
+                printf("\n %s quantidade de items: %d ; custo-> %.2f\n",ppedido->items_pedido[i].nome, ppedido->items_pedido[i].quantidade, ppedido->items_pedido[i].prize );
+            }
+        }
+        printf("-------------------\n");
+        printf("Conta ate agora: %.2f \n",ppedido->prize);
+        // check in estoque if values are available
+
+        if(!check_en_estoque(ppedido)){
+
+                    memset(ppedido->items_pedido,0,10*sizeof(struct items));
+
+            printf("\n Items de pedido fora de estoque\nPress ENTER key to go back to menu\n");
+            getch();
+        }else{
+            pedido_ok= true;
+        }
+    };
+
+    //adding cliente to pedido
+    char cpf[Max];
+    printf("\nO Cliente esta cadastrado?\n inserir CPF: ");
+    scanf("%s", cpf);
+    if( check_cliente(cpf, pcliente) ){
+        ppedido->cliente= *pcliente;
+        printf("Cliente %s asignado !\n", ppedido->cliente.nome);
+    }else{
+        cadastrar_cliente(pcliente, cpf);
+        printf("\n cliente: %s cpf: %s \n", pcliente->nome, pcliente->CPF);
 
     }
-    scanf("%d", &opt);
 
+
+    set_motoqueiro(ppedido);
+
+    set_time(ppedido);
+    //set sede by global variable
+
+    //Pedido vai ser mandado para a base de dados;
+
+    printf("\n\n Pedido Cadastrado !");
+    printf("\nPress ENTER key to go back to the menu\n");
+    getch();
+    system("@cls||clear");
+}
+
+void show_promotion(struct users *atendente, struct clientes *pcliente,  struct pedidos *ppedido){
+    system("@cls||clear");
+    int opt,i, length,tamanho, Qtd;
+
+    //for testing
+     struct produtos test_producto[]={
+        {
+            30,"Monster", 2.55, 100
+        },
+        {
+            31,"Coca", 2.55, 20
+        },
+        {
+            35,"pepsi", 4.55, 20
+        }
+    };
+
+    struct items test_promotions[]={
+        {
+            .id=10,
+            .nome= "Pizza portuguesa",
+            .prize= 15,
+            .produto[0]= test_producto[0],
+            .quantidade=4,
+            .promotion= true
+        },
+        {
+            .id=11,
+            .nome= "Pizza calabresa",
+            .prize= 15,
+            .produto[0]= test_producto[1],
+            .quantidade=4,
+            .promotion= false
+        },
+        {
+            .id=12,
+            .nome= "Pizza 4 queijos",
+            .prize= 15,
+            .produto= {test_producto[0],test_producto[2]},
+            .quantidade=4,
+            .promotion= false
+        },
+         {
+            .id=14,
+            .nome= "Pizza Doce",
+            .prize= 50,
+            .produto= {test_producto[0],test_producto[2]},
+            .quantidade=0,
+            .promotion= false
+        },
+        {
+            .id=20,
+            .nome= "Monster",
+            .prize= 8.66,
+            .produto[0]= test_producto[0],
+            .quantidade=100,
+            .tamanho=1,
+            .promotion= true
+        },
+        {
+            .id=21,
+            .nome= "Coca-Cola",
+            .prize= 4.55,
+            .produto[0]= test_producto[1],
+            .quantidade=20,
+            .tamanho=1,
+            .promotion= false
+        },
+        {
+            .id=22,
+            .nome= "Pepsi",
+            .prize= 4.55,
+            .produto= {test_producto[2]},
+            .quantidade=20,
+            .tamanho=1,
+            .promotion= false
+        }
+    };
+
+    length= sizeof(test_promotions)/sizeof(test_promotions[0]);
+    printf("\n----------Nossas Promoções disponivels-----\n");
+
+    for(i=0; i<length; i++){
+        if(test_promotions[i].quantidade!=0 && test_promotions[i].promotion==true ){
+            printf(" %d-> %s , prize: %.2f \n", i+1, test_promotions[i].nome, test_promotions[i].prize);
+        }
+    }
+
+    printf("Escolha sua promoção: ");
+    scanf("%d", &opt);
+     printf("\nTamanho da pizza?");
+    printf("\n1- Pequena\n");
+    printf("\n2- Mediana\n");
+    printf("\n3- Grande\n\n");
+    scanf("%d", &tamanho);
+    printf("\nQuantidade desejada?");
+    scanf("%d", &Qtd);
+
+     if(opt && Qtd!=0){
+        double total=0;
+        test_promotions[opt-1].tamanho=tamanho;
+        double multiplier= get_multiplier(test_promotions[opt-1].tamanho);
+        for(i=0; i<Qtd; i++){
+            ppedido->items_pedido[i]= test_promotions[opt-1];
+            ppedido->items_pedido[i].quantidade=1;
+            total+= test_promotions[opt-1].prize*multiplier;
+
+        }
+        ppedido->prize=total;
+    }
+
+    cadastrar_pedido_promotion(atendente,pcliente, ppedido);
 }
 
 

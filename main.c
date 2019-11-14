@@ -54,13 +54,12 @@ int main ()
 			case 2:
 			    printf("O Cliente esta cadastrado?\n Inserir 0 se não ou se é cadastrado inserir CPF: ");
                 scanf("%s", cpf);
-
                 if(strcmp(cpf,"0")==0){
                     system("@cls||clear");
                     break;
                 }
-                if(check_cliente(cpf, pcliente)){
 
+                if(check_cliente(cpf, pcliente)){
                     //Aqui vai trouzer pedido del cliente
                     check_for_pedido(pcliente, cpf);
                 }else{
@@ -73,7 +72,7 @@ int main ()
 
 			break;
 			case 3:
-			    show_menu();//change
+			    show_promotion(puser, pcliente, pcu_pedido);//change
 			break;
 			case 4:
 			    get_clientes();
