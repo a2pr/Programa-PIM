@@ -3,16 +3,25 @@
 #include "types.h"
 
 bool check_user(struct users *current_user, int *logout){
+    int i, lenght;
+
     //gets information from database;
     //for now just a variable
- struct users test_user={1,"andres","123456",0};
+     struct users test_user[2]={
+            {1,"andres","123456",1},
+            {2,"admin","123456",0}
+     };
+    lenght= sizeof(test_user)/sizeof(test_user[0]);
 
-   if(strcmp(current_user->login, test_user.login)==0 && strcmp(current_user->password, test_user.password)==0 ){
-		*logout=1;
-		return 1;
-    }else{
-    	return 0;
-    }
+     for(i=0;i<lenght;i++){
+       if(strcmp(current_user->login, test_user[i].login)==0 && strcmp(current_user->password, test_user[i].password)==0 ){
+            *current_user=test_user[i];
+            *logout=1;
+            return 1;
+        }
+     }
+
+     return 0;
 }
 
 bool check_cliente(char cpf[], struct clientes *pcliente){
@@ -482,8 +491,6 @@ void cadastrar_pedido(struct users *atendente, struct clientes *pcliente,  struc
     system("@cls||clear");
 }
 
-
-
 //needs to return pedidos by client
 void check_for_pedido(struct clientes *pcliente, char cpf[]){
     int i,k,length_p, length_i;
@@ -804,7 +811,29 @@ void show_promotion(struct users *atendente, struct clientes *pcliente,  struct 
 
 
  void get_clientes(){
- printf("getting clientes.... \n");
+     system("@cls||clear");
+     int i, length;
+     //get clientes from database
+
+     //for now test
+
+      struct clientes test_cliente[]= {
+        {1,"789456","andres","Manaus","987456123"},
+        {2,"123456","simon","Peru","987456111"},
+        {3,"789852","Holda","Peru","98745565"},
+        {4,"7892586","David","USA","98745282"},
+        {5,"789636","David Chevere","USA","987498745"},
+    };
+
+     length= sizeof(test_cliente)/sizeof(test_cliente[0]);
+        printf("getting clientes.... \n");
+     for(i=0;i<length;i++){
+        printf("\n %d ) %s CPF: %s \n", i+1, test_cliente[i].nome,  test_cliente[i].CPF );
+     };
+    printf("\nQuantidade de clientes cadastrados: %d\n\n", i+1);
+    printf("\nPress ENTER key to go back to the menu\n");
+    getch();
+    system("@cls||clear");
  }
  void show_R_S(){
  printf("getting reclamações e suggestões..... \n");

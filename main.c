@@ -27,8 +27,6 @@ int main ()
         printf("Password: \n");
         scanf("%s", puser->password);
 
-        puser->id=1;
-        puser->user_permissions= 1;
         if(check_user(puser, plogout)){
         	i=0;
 		}
@@ -75,7 +73,7 @@ int main ()
 			    show_promotion(puser, pcliente, pcu_pedido);//change
 			break;
 			case 4:
-			    get_clientes();
+			    get_clientes(); //for now it will only display clientes
 			break;
 			case 5:
 			    show_R_S();
