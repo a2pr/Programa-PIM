@@ -398,17 +398,28 @@ void set_motoqueiro( struct pedidos *ppedido){
 }
 
 void set_time( struct pedidos *ppedido){
-    int i,length;
+    int i,length, multiplier,qtd, j=0;
     double time;
     length=sizeof(ppedido->items_pedido)/sizeof(ppedido->items_pedido[0]);
     //another logic for this should be added
     for(i=0;i<length;i++){
-        if(!ppedido->items_pedido[i].id){
-            break;
+        if(ppedido->items_pedido[i].id){
+                multiplier=get_multiplier(ppedido->items_pedido[i].tamanho);
+                qtd=ppedido->items_pedido[i].quantidade;
+                j+=(multiplier*qtd);
         }
+
     }
-    time= (i*20)/60;
-    printf("Demorara %.3f horas para chegar seu pedido", time);
+    time= (j*20); //min; formula= soma de cada item(quantidade de item * multiplier de tamanho) *20 min
+    if(time>=60){
+        if((int)time%60 != 0){
+            int hours= (int)time/60;
+            printf("Demorara %d horas para chegar seu pedido\n",hours);
+        }
+    }else{
+        printf("Demorara %.0f minutos para chegar seu pedido\n", time);
+    }
+
 
 }
 void cadastrar_pedido(struct users *atendente, struct clientes *pcliente,  struct pedidos *ppedido){
