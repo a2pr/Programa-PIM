@@ -2,6 +2,23 @@
 #define FUNCTIONS_H_INCLUDED
 #include "types.h"
 
+void  clear_pedido( struct pedidos *pedido){
+
+    struct pedidos void_pedido;
+
+    *pedido=void_pedido;
+}
+
+void get_time(struct pedidos *pedido){
+    time_t now;
+
+    char * c_time;
+
+    now=time(NULL);
+    c_time=ctime(&now);
+
+    pedido->time=c_time;
+}
 bool check_user(struct users *current_user, int *logout){
     int i, lenght;
 
@@ -435,9 +452,11 @@ void set_time( struct pedidos *ppedido){
 
 void cadastrar_pedido(struct users *atendente, struct clientes *pcliente,  struct pedidos *ppedido){
     bool pedido_ok=false;
+
     while(!pedido_ok){
         int length,i;
 
+        get_time(ppedido);
         //choose from menu
         choose_pizza(ppedido);
         choose_bebida(ppedido);
@@ -485,6 +504,8 @@ void cadastrar_pedido(struct users *atendente, struct clientes *pcliente,  struc
 
     //Pedido vai ser mandado para a base de dados;
 
+    //clear variable
+    clear_pedido(ppedido);
     printf("\n\n Pedido Cadastrado !");
     printf("\nPress ENTER key to go back to the menu\n");
     getch();
@@ -643,6 +664,7 @@ void get_menu(struct items (*menu)[Max]){
 
 void cadastrar_pedido_promotion(struct users *atendente, struct clientes *pcliente,  struct pedidos *ppedido){
      bool pedido_ok=false;
+    get_time(ppedido);
     while(!pedido_ok){
        int length,i;
         //showing results
@@ -687,6 +709,10 @@ void cadastrar_pedido_promotion(struct users *atendente, struct clientes *pclien
     //set sede by global variable
 
     //Pedido vai ser mandado para a base de dados;
+
+
+    //clear variable
+    clear_pedido(ppedido);
 
     printf("\n\n Pedido Cadastrado !");
     printf("\nPress ENTER key to go back to the menu\n");

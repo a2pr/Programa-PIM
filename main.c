@@ -3,6 +3,8 @@
 #include <stdbool.h>
 #include <string.h>
 #include<conio.h>
+#include <time.h>
+
 #define Max 100
 #include "functions.h"
 #include "types.h"

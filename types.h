@@ -54,6 +54,12 @@ struct pedidos{
     struct motoqueiros motoqueiro;
     struct users atendente;
     int sede;
+    char * time;
+};
+
+struct feedback{
+
+
 };
 
 #endif // TYPES_H_INCLUDED
