@@ -55,7 +55,7 @@ struct pedidos{
     struct motoqueiros motoqueiro;
     struct users atendente;
     int sede;
-    char * time;
+    struct tm *time;
 };
 
 struct feedback{
@@ -63,7 +63,7 @@ struct feedback{
     struct clientes cliente;
     char description[500];
     int type; //0 suggestao/ 1 reclamação
-    char * time;
+    struct tm *time; //type struct tm that contains the value of the time; in database we only will save month, day and year
     int sede;
 };
 

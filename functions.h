@@ -12,23 +12,31 @@ void  clear_pedido( struct pedidos *pedido){
 void get_time_pedido(struct pedidos *pedido){
     time_t now;
 
-    char * c_time;
+    struct tm *c_time;
 
-    now=time(NULL);
-    c_time=ctime(&now);
+    time(&now);
+    c_time= localtime(&now);
 
     pedido->time=c_time;
 }
 
 void get_time(struct feedback *fb){
-    time_t now;
+time_t now;
 
-    char * c_time;
+    struct tm *c_time;
 
-    now=time(NULL);
-    c_time=ctime(&now);
+    time(&now);
+    c_time= localtime(&now);
 
     fb->time=c_time;
+}
+
+void print_date(struct tm *ptime){
+
+    char date_to_print[50];
+    strftime(date_to_print, sizeof(date_to_print), "%x", ptime);
+
+    printf("%s", date_to_print);
 }
 
 bool check_user(struct users *current_user, int *logout){

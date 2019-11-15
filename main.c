@@ -47,6 +47,7 @@ int main ()
 		printf("7- sair \n");
 		scanf("%d", &step);
 		char cpf[Max];
+
 		switch(step){
 			case 1:
 			    cadastrar_pedido(puser, pcliente, pcu_pedido);
@@ -68,7 +69,6 @@ int main ()
                     getch();
                     system("@cls||clear");
                 }
-
 
 			break;
 			case 3:
