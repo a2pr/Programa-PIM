@@ -59,7 +59,11 @@ struct pedidos{
 
 struct feedback{
 
-
+    struct clientes cliente;
+    char description[500];
+    int type; //0 suggestao/ 1 reclamação
+    char * time;
+    int sede;
 };
 
 #endif // TYPES_H_INCLUDED

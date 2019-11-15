@@ -9,7 +9,7 @@ void  clear_pedido( struct pedidos *pedido){
     *pedido=void_pedido;
 }
 
-void get_time(struct pedidos *pedido){
+void get_time_pedido(struct pedidos *pedido){
     time_t now;
 
     char * c_time;
@@ -19,6 +19,18 @@ void get_time(struct pedidos *pedido){
 
     pedido->time=c_time;
 }
+
+void get_time(struct feedback *fb){
+    time_t now;
+
+    char * c_time;
+
+    now=time(NULL);
+    c_time=ctime(&now);
+
+    fb->time=c_time;
+}
+
 bool check_user(struct users *current_user, int *logout){
     int i, lenght;
 
@@ -61,6 +73,7 @@ bool check_cliente(char cpf[], struct clientes *pcliente){
     printf("cliente sem registro\n");
  return false;
 }
+
 
 double get_multiplier(int i){
      switch(i){
@@ -456,7 +469,7 @@ void cadastrar_pedido(struct users *atendente, struct clientes *pcliente,  struc
     while(!pedido_ok){
         int length,i;
 
-        get_time(ppedido);
+        get_time_pedido(ppedido);
         //choose from menu
         choose_pizza(ppedido);
         choose_bebida(ppedido);
@@ -664,7 +677,7 @@ void get_menu(struct items (*menu)[Max]){
 
 void cadastrar_pedido_promotion(struct users *atendente, struct clientes *pcliente,  struct pedidos *ppedido){
      bool pedido_ok=false;
-    get_time(ppedido);
+      get_time_pedido(ppedido);
     while(!pedido_ok){
        int length,i;
         //showing results
@@ -834,8 +847,6 @@ void show_promotion(struct users *atendente, struct clientes *pcliente,  struct 
     cadastrar_pedido_promotion(atendente,pcliente, ppedido);
 }
 
-
-
  void get_clientes(){
      system("@cls||clear");
      int i, length;
@@ -861,9 +872,92 @@ void show_promotion(struct users *atendente, struct clientes *pcliente,  struct 
     getch();
     system("@cls||clear");
  }
- void show_R_S(){
- printf("getting reclamações e suggestões..... \n");
+
+ void get_or_do_feedback( struct clientes *pcliente){
+    int opt, i, length, type_of_comment;
+    char cpf[100];
+    //for testing
+
+      struct clientes test_cliente[]= {
+        {1,"789456","andres","Manaus","987456123"},
+        {2,"123456","simon","Peru","987456111"},
+        {3,"789852","Holda","Peru","98745565"},
+        {4,"7892586","David","USA","98745282"},
+        {5,"789636","David Chevere","USA","987498745"},
+    };
+
+    struct feedback test_fb[]={
+        {
+            .cliente= test_cliente[0],
+            .description="lorem impsom",
+            .type=1,
+            .sede=0
+        },
+        {
+            .cliente= test_cliente[1],
+            .description="lorem impsomqhbdwfubqrweyfveqr",
+            .type=0,
+            .sede=1
+        }
+
+    };
+
+    printf("\n1- Cadastra uma Reclamações ou sugestão\n");
+    printf("\n2- Feedback disponivel\n");
+    scanf("%d", &opt);
+    switch(opt){
+        case 1:
+            system("@cls||clear");
+            struct feedback *pfb,fb, clear_fb;
+            pfb=&fb;
+
+            printf("Inserir o CPF do cliente: \n");
+            scanf("%s", cpf);
+            if(check_cliente(cpf,pcliente)){
+                pfb->cliente=*pcliente;
+            }else{
+               cadastrar_cliente(pcliente,cpf);
+            }
+            printf("Inserir o feedback: \n");
+            scanf("%s",  pfb->description);
+
+            printf("Tipo de feedback. \n1= reclamação\n0=suggestao: \n");
+            scanf("%d", &type_of_comment);
+
+            pfb->type= type_of_comment;
+
+            get_time(pfb);
+
+            //sede will be set by global variable
+
+            //set feeback in database
+
+            printf("feedback registrado!\n");
+            *pfb=clear_fb;
+            printf("\nPress ENTER key to go back to the menu\n");
+            getch();
+            system("@cls||clear");
+            break;
+        case 2:
+            //get feedback from database
+
+            length=sizeof(test_fb)/sizeof(test_fb[0]);
+
+            for(i=0;i<length; i++){
+                    printf(" %d-> From %s: \n %s\n", i+1, test_fb[i].cliente.nome, test_fb[i].description );
+                    printf("-----------\n\n");
+            }
+            printf("\nPress ENTER key to go back to the menu\n");
+            getch();
+            system("@cls||clear");
+            break;
+        default:
+            printf("not an option!\n");
+            break;
+
+    }
  }
+
  void show_estoque(){
  printf("in the estoque....\n");
  }

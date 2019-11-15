@@ -78,7 +78,7 @@ int main ()
 			    get_clientes(); //for now it will only display clientes
 			break;
 			case 5:
-			    show_R_S();
+			    get_or_do_feedback(pcliente);
 			break;
             case 6:
                 show_estoque();
