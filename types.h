@@ -19,6 +19,7 @@ struct produtos{
     char nome[Max];
     double prize;
     int quantidade;
+    int sede;
 };
 
 struct motoqueiros{

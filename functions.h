@@ -104,6 +104,7 @@ void choose_pizza(struct pedidos *ppedido){
             25,"tomatoes", 4.55, 50
         }
     };
+
     struct items test_pizzas[]={
         {
             .id=10,
@@ -958,8 +959,88 @@ void show_promotion(struct users *atendente, struct clientes *pcliente,  struct 
     }
  }
 
+void sort_estoque(int n, struct produtos *prod){
+
+int i, j ;
+struct produtos t;
+
+     for (i = 0; i < n; i++) {
+
+        for (j = i + 1; j < n; j++) {
+            if ( prod[j].sede < prod[i].sede) {
+
+                t.sede =  prod[i].sede;
+                prod[i].sede = prod[j].sede;
+                prod[j].sede = t.sede;
+            }
+        }
+    }
+}
+
+void get_estoque(int opt){
+    int i,j, length;
+
+     struct produtos *ptest, test_producto[]={
+        {
+            15,"dough", 2.55, 25, 1
+        },
+        {
+            18,"chesse", 2.55, 15, 1
+        },
+        {
+            25,"tomatoes", 4.55, 50, 2
+        },
+        {
+            1,"monster", 7.66, 50, 2
+        },
+        {
+            2,"onions", 2.33, 50, 0
+        },
+        {
+            3,"tempero", 1.55, 50, 0
+        },
+        {
+            4,"cheese", 3.55, 50, 1
+        },
+        {
+            5,"pepsi", 5.55, 50, 0
+        }
+    };
+
+    ptest= &test_producto;
+    length= sizeof(test_producto)/sizeof(test_producto[0]);
+    sort_estoque(length, ptest);
+
+    if(opt==1){
+        printf("Qual sede quer pesquiçar ?\n 0= sede principal\n 1= sede en iranduba\n 2= sede terciaria\n");
+        scanf("%d", &j);
+         for (i = 0; i < length; i++)
+             if(test_producto[i].sede==j){
+               printf("%s , quantidade = %d na sede %d\n", test_producto[i].nome,test_producto[i].quantidade, test_producto[i].sede );
+             }
+
+    }else if(opt==2){
+        for (i = 0; i < length; i++)
+            printf("%s , quantidade = %d na sede %d\n", test_producto[i].nome,test_producto[i].quantidade, test_producto[i].sede );
+
+
+    }
+}
+
  void show_estoque(){
- printf("in the estoque....\n");
+ int opt;
+
+    printf("\n1- Estoque por sede\n");
+    printf("\n2- Estoque Total\n");
+    scanf("%d", &opt);
+     switch(opt){
+        case 1:
+            get_estoque(opt);
+            break;
+        case 2:
+            get_estoque(opt);
+            break;
+     }
  }
 
 
