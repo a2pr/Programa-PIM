@@ -55,6 +55,7 @@ struct pedidos{
     struct motoqueiros motoqueiro;
     struct users atendente;
     int sede;
+    bool cancelado; //cancelado
     struct tm *time;
 };
 

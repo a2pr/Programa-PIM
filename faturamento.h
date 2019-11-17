@@ -16,48 +16,8 @@ struct tm * get_time_faturamento(){
 }
 
 void faturamento(){
-    double total=0;
-    int length,i, j, opt,sedeId, tempo, length_items, optSabor ;
-    printf("\n Faturamento total, por sede ou por pizza mais pedida?\n1-  Total\n2- Sede\n3- Sabor\n\n");
-    scanf("%d", &opt);
-    switch(opt){
-        case 1:
-            printf("Cual tempo:\n1-Mensal\n2- Diario\n");
-            scanf("%d", &tempo);
-        break;
-        case 2:
-            printf("Qual Sede:\n0-Central\n1- Iranduba\n2-Secundaria\n");
-            scanf("%d", &sedeId);
-             printf("Cual tempo:\n1-Mensal\n2- Diario\n");
-            scanf("%d", &tempo);
-            break;
-        case 3:
-            printf("\nPela sede ou total?\n1- Sede\n2- Total\n");
-            scanf("%d", &optSabor);
-            switch(optSabor){
-                case 1:
-                    printf("Qual Sede:\n0-Central\n1- Iranduba\n2-Secundaria");
-                    scanf("%d", &sedeId);
-                    printf("Qual tempo:\n1-Mensal\n2- Diario\n");
-                    scanf("%d", &tempo);
-                break;
-                case 2:
-                    printf("Qual tempo:\n1-Mensal\n2- Diario\n");
-                    scanf("%d", &tempo);
-                    break;
-                default:
-                    printf("Opção nao aceitada!");
-                    break;
-            }
-            break;
 
-        default:
-            printf("Opção nao aceitada!");
-            break;
-
-    }
-
-   struct tm test_dates[10]={
+     struct tm test_dates[10]={
         {
             .tm_mday=17,
             .tm_mon=10,
@@ -88,6 +48,7 @@ void faturamento(){
             .tm_mon=2,
             .tm_year=2019-1900
         },
+
         {
             .tm_mday=10,
             .tm_mon=4,
@@ -103,7 +64,7 @@ void faturamento(){
             .tm_mon=4,
             .tm_year=2019-1900
         }
-    };
+};
 
     struct produtos test_producto[]={
         {
@@ -203,7 +164,7 @@ void faturamento(){
        },
        {
             .cliente= test_cliente[1],
-            .items_pedido[0]= test_item[2],
+            .items_pedido[0]= test_item[0],
             .prize= 20 ,
             .motoqueiro= test_motoqueiro[1],
             .atendente= 2,
@@ -212,19 +173,68 @@ void faturamento(){
        }
     };
 
-    struct pedidos test_for_month;
+    double total=0;
+    int length,i, opt,sedeId, tempo, length_items, optSabor, maiorInd=0, maior=NULL ;
+    printf("\n Faturamento total, por sede ou por pizza mais pedida?\n1-  Total\n2- Sede\n3- Sabor\n\n");
+    scanf("%d", &opt);
+    switch(opt){
+        case 1:
+            printf("Cual tempo:\n1-Mensal\n2- Diario\n");
+            scanf("%d", &tempo);
+        break;
+        case 2:
+            printf("Qual Sede:\n0-Central\n1- Iranduba\n2-Secundaria\n");
+            scanf("%d", &sedeId);
+             printf("Cual tempo:\n1-Mensal\n2- Diario\n");
+            scanf("%d", &tempo);
+            break;
+        case 3:
+            printf("\nPela sede ou total?\n1- Sede\n2- Total\n");
+            scanf("%d", &optSabor);
+            switch(optSabor){
+                case 1:
+                    printf("Qual Sede:\n0-Central\n1- Iranduba\n2-Secundaria");
+                    scanf("%d", &sedeId);
+                    printf("Qual tempo:\n1-Mensal\n2- Diario\n");
+                    scanf("%d", &tempo);
+                break;
+                case 2:
+                    printf("Qual tempo:\n1-Mensal\n2- Diario\n");
+                    scanf("%d", &tempo);
+                    break;
+                default:
+                    printf("Opção nao aceitada!");
+                    break;
+            }
+            break;
 
-    struct pedidos test_for_multiple_sedes_day;
-    struct pedidos test_for_multiple_sedes_month;
+        default:
+            printf("Opção nao aceitada!");
+            break;
 
-    char time_s[50];
+    }
+
+
+
+    //struct pedidos test_for_month;
+
+    //struct pedidos test_for_multiple_sedes_day;
+    //struct pedidos test_for_multiple_sedes_month;
+
+    //char time_s[50];
     struct tm *now= get_time_faturamento();
     length= sizeof(test_for_day)/sizeof(test_for_day[0]);
+    int length_sabores=sizeof(test_item)/sizeof(test_item[0]), maiorT[length_sabores];
 
+    //clear maiorT
+    for(i=0;i<length_sabores;i++){
+         maiorT[i]=NULL;
+    }
     //checks in database
     for(i=0;i<length; i++){
     //check for sede or total
         if(opt<3){
+                int j;
             //check total
             if(opt==1){
 
@@ -295,13 +305,76 @@ void faturamento(){
             }
 
         }
-        //check for sabores
+
         else{
-
+        break;
         }
-
     }
-    printf("\n Total-----> %.2f", total );
+    //checks in database
+    //check for sabores
+    for(i=0;i<length; i++){
+                int j, k, qtdSabores=0, maior;
+
+                int maiorl[length_sabores];
+
+                //Pela sede
+                if(optSabor==1){
+                    length_items=sizeof(test_for_day[i].items_pedido)/sizeof(test_for_day[i].items_pedido[0]);
+
+                    //assign counter for sabores
+                    int counter[length_sabores] ;
+                    for(j=0;j<length_sabores;j++){
+                        counter[j]=NULL;
+                        maiorl[j]=NULL;
+                    }
+                        //checking quantidade de sabores pedidos
+                        for(j=0; j<length_items; j++){
+                            if(test_for_day[i].items_pedido[j].id){
+                                    for(k=0; k<length_sabores; k++){
+                                       if(test_for_day[i].items_pedido[j].id== test_item[k].id){
+                                                counter[k]++;
+                                       }
+                                    }
+                            }
+                        }
+                        for(j=0;j<length_sabores;j++){
+                                maiorl[j]+=counter[j];
+                        }
+
+
+                }
+                //pelo total
+                else{
+                        //pelo mes
+                        if(tempo==1){
+                              for(j=0; j<length_items; j++){
+
+                              }
+                        }
+                        //pelo dia
+                        else{
+
+                        }
+                }
+
+                 for(j=0;j<length_sabores;j++){
+                                maiorT[j]+=maiorl[j];
+                }
+    }
+    if(opt==3){
+            int j;
+            for(j=0;j<length_sabores;j++){
+                if(maior<maiorT[j]){
+                    maior=maiorT[j];
+                    maiorInd=j;
+                }
+            }
+        printf("Sabor mais pedido: %s ------- quantidade vendida: %d", test_item[maiorInd].nome, maior );
+    }
+
+    if(opt<3){
+        printf("\n Total-----> %.2f", total );
+    }
     printf("\nPress ENTER key to go back to the menu\n");
     getch();
     system("@cls||clear");
