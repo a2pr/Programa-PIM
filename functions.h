@@ -1,6 +1,7 @@
 #ifndef FUNCTIONS_H_INCLUDED
 #define FUNCTIONS_H_INCLUDED
 #include "types.h"
+#include "faturamento.h"
 
 void  clear_pedido( struct pedidos *pedido){
 
@@ -30,6 +31,9 @@ time_t now;
 
     fb->time=c_time;
 }
+
+
+
 
 void print_date(struct tm *ptime){
 
@@ -81,7 +85,6 @@ bool check_cliente(char cpf[], struct clientes *pcliente){
     printf("cliente sem registro\n");
  return false;
 }
-
 
 double get_multiplier(int i){
      switch(i){

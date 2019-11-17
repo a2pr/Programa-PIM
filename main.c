@@ -8,6 +8,7 @@
 #define Max 100
 #include "functions.h"
 #include "types.h"
+#include "functions.h"
 
 int main ()
 {
@@ -43,8 +44,9 @@ int main ()
             printf("4- Clientes cadastrados \n");
             printf("5- Reclamações e sugestoes \n");
             printf("6- Estoque \n");
+            printf("7- Faturamento \n");
 		}
-		printf("7- sair \n");
+		printf("8- sair \n");
 		scanf("%d", &step);
 		char cpf[Max];
 
@@ -84,6 +86,9 @@ int main ()
                 show_estoque();
 			break;
 			case 7:
+                faturamento();
+			break;
+			case 8:
 				printf("voce saio do sistema");
 				logout=0;
 			break;
