@@ -36,8 +36,10 @@ int main ()
 		}
         system("@cls||clear");
        }
+        check_for_databases();
 
       while(logout==1){
+
         printf("---------Menu------\n");
        	printf("1- Cadastrar Pedido \n");
 		printf("2- Pedidos \n");
