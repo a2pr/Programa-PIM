@@ -2,6 +2,7 @@
 #define FUNCTIONS_H_INCLUDED
 #include "types.h"
 #include "faturamento.h"
+#include "functions.h"
 
 void  clear_pedido( struct pedidos *pedido){
 

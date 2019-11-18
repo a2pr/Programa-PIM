@@ -9,6 +9,7 @@
 #include "functions.h"
 #include "types.h"
 #include "functions.h"
+#include "database_implementation.h"
 
 int main ()
 {

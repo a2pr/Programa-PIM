@@ -2,6 +2,7 @@
 #define FATURAMENTO_H_INCLUDED
 #include "types.h"
 #include "functions.h"
+#include "functions.h"
 
 struct tm * get_time_faturamento(){
 
