@@ -3,16 +3,16 @@
 
 struct users{
     int id;
-    char login[Max];
-    char password[Max];
+    char *login;
+    char *password;
     int user_permissions;
 };
+
 struct sede{
     int id;
     char nome[Max];
     char enderezo[Max];
 };
-
 
 struct produtos{
     int id;
@@ -42,10 +42,10 @@ struct items{
 
 struct clientes{
     int id;
-    char CPF[Max];
-    char nome[Max];
-    char enderezo[Max];
-    char telefone[Max];
+    char *CPF;
+    char *nome;
+    char *enderezo;
+    char *telefone;
 };
 
 struct pedidos{

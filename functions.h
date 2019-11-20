@@ -3,6 +3,7 @@
 #include "types.h"
 #include "faturamento.h"
 #include "functions.h"
+#include "database_implementation.h"
 
 void  clear_pedido( struct pedidos *pedido){
 
@@ -33,9 +34,6 @@ time_t now;
     fb->time=c_time;
 }
 
-
-
-
 void print_date(struct tm *ptime){
 
     char date_to_print[50];
@@ -45,24 +43,28 @@ void print_date(struct tm *ptime){
 }
 
 bool check_user(struct users *current_user, int *logout){
-    int i, lenght;
-
+    int *plen,i, lenght;
+    plen=&lenght;
     //gets information from database;
     //for now just a variable
-     struct users test_user[2]={
-            {1,"andres","123456",1},
-            {2,"admin","123456",0}
-     };
-    lenght= sizeof(test_user)/sizeof(test_user[0]);
+    struct users *dbUsers,Users[10] ;
+    dbUsers=&Users;
+    get_users(dbUsers,plen);
 
+    //testing receive data
+     /*for(i=0; i<lenght; i++){
+        printf("%i. login: %s - pass: %s - class: %i \n",dbUsers[i].id, dbUsers[i].login, dbUsers[i].password, dbUsers[i].user_permissions );
+     }
+     printf("%s, %s\n",current_user->login,current_user->password);
+     */
      for(i=0;i<lenght;i++){
-       if(strcmp(current_user->login, test_user[i].login)==0 && strcmp(current_user->password, test_user[i].password)==0 ){
-            *current_user=test_user[i];
+       if(strcmp(current_user->login, dbUsers[i].login)==0 && strcmp(current_user->password, dbUsers[i].password)==0 ){
+            *current_user=dbUsers[i];
             *logout=1;
             return 1;
         }
      }
-
+    printf("not found!");
      return 0;
 }
 
@@ -862,23 +864,24 @@ void show_promotion(struct users *atendente, struct clientes *pcliente,  struct 
 
  void get_clientes(){
      system("@cls||clear");
-     int i, length;
+     int *plen, i, length;
+     plen=&length;
+
+     struct clientes *dbClientes,Clientes[20] ;
+     dbClientes=&Clientes;
+
      //get clientes from database
+     get_clientes_db(dbClientes,plen);
 
-     //for now test
+     /*testing data obtain
+     for(i=0; i<length; i++){
+        printf("%i. %i- %s - %s -", i+1,dbClientes[i].id, dbClientes[i].CPF,dbClientes[i].nome );
+        printf(" %s - %s\n", dbClientes[i].enderezo, dbClientes[i].telefone);
+     }*/
 
-      struct clientes test_cliente[]= {
-        {1,"789456","andres","Manaus","987456123"},
-        {2,"123456","simon","Peru","987456111"},
-        {3,"789852","Holda","Peru","98745565"},
-        {4,"7892586","David","USA","98745282"},
-        {5,"789636","David Chevere","USA","987498745"},
-    };
-
-     length= sizeof(test_cliente)/sizeof(test_cliente[0]);
-        printf("getting clientes.... \n");
+    printf("getting clientes.... \n");
      for(i=0;i<length;i++){
-        printf("\n %d ) %s CPF: %s \n", i+1, test_cliente[i].nome,  test_cliente[i].CPF );
+        printf("\n %d ) %s CPF: %s \n", i+1, dbClientes[i].nome,  dbClientes[i].CPF );
      };
     printf("\nQuantidade de clientes cadastrados: %d\n\n", i+1);
     printf("\nPress ENTER key to go back to the menu\n");
@@ -889,25 +892,30 @@ void show_promotion(struct users *atendente, struct clientes *pcliente,  struct 
  void get_or_do_feedback( struct clientes *pcliente){
     int opt, i, length, type_of_comment;
     char cpf[100];
-    //for testing
 
-      struct clientes test_cliente[]= {
-        {1,"789456","andres","Manaus","987456123"},
-        {2,"123456","simon","Peru","987456111"},
-        {3,"789852","Holda","Peru","98745565"},
-        {4,"7892586","David","USA","98745282"},
-        {5,"789636","David Chevere","USA","987498745"},
-    };
+    int *plen,length_clientes;
+    plen=&length_clientes;
+
+    struct clientes *dbClientes,Clientes[20] ;
+    dbClientes=&Clientes;
+
+     //get clientes from database not really necesary
+      /*testing data obtain
+    get_clientes_db(dbClientes,plen);
+    for(i=0; i<length_clientes; i++){
+        printf("%i. %i- %s - %s -", i+1,dbClientes[i].id, dbClientes[i].CPF,dbClientes[i].nome );
+        printf(" %s - %s\n", dbClientes[i].enderezo, dbClientes[i].telefone);
+     }*/
 
     struct feedback test_fb[]={
         {
-            .cliente= test_cliente[0],
+            .cliente= dbClientes[0],
             .description="lorem impsom",
             .type=1,
             .sede=0
         },
         {
-            .cliente= test_cliente[1],
+            .cliente= dbClientes[1],
             .description="lorem impsomqhbdwfubqrweyfveqr",
             .type=0,
             .sede=1

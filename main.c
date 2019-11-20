@@ -10,33 +10,41 @@
 #include "types.h"
 #include "functions.h"
 #include "database_implementation.h"
+#include "memory.h"
 
 int main ()
 {
-    //testuser
+    char temp_login[10],temp_pass[10];
+
     struct users *puser, current_user;
     puser=&current_user;
+
     struct clientes *pcliente, cliente ;
     pcliente= &cliente;
+
     struct pedidos *pcu_pedido,cu_pedido;
     pcu_pedido=&cu_pedido;
+
     int i=1, step=0, optG=0;
 	int *plogout, logout=0;
 	plogout = &logout;
 
+	check_for_databases();
+
     while (i != 0)
        {
          printf("Login: \n");
-        scanf("%s",puser->login);
+        scanf("%s",temp_login);
         printf("Password: \n");
-        scanf("%s", puser->password);
+        scanf("%s",temp_pass);
 
+        create_cu_user(puser, temp_login,temp_pass);
+        printf("%s,%s",puser->login,puser->password );
         if(check_user(puser, plogout)){
         	i=0;
 		}
         system("@cls||clear");
        }
-        check_for_databases();
 
       while(logout==1){
 
