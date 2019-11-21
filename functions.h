@@ -46,7 +46,7 @@ bool check_user(struct users *current_user, int *logout){
     int *plen,i, lenght;
     plen=&lenght;
     //gets information from database;
-    //for now just a variable
+
     struct users *dbUsers,Users[10] ;
     dbUsers=&Users;
     get_users(dbUsers,plen);
@@ -403,48 +403,22 @@ void cadastrar_cliente(struct clientes *pcliente, char cpf[]){
 }
 
 void set_motoqueiro( struct pedidos *ppedido){
-    int length, j;
+    int *plen,length, j;
     bool opt=false;
-    //for testing
-    struct motoqueiros test_list_motoqueiros[5]={
-        {
-          .id=1,
-          .nome="Julio",
-          .telefone="789456",
-          .sede=1,
-          .disponivel= true
-        },
-        {
-            .id=2,
-          .nome="Manuel",
-          .telefone="4568",
-          .sede=1,
-          .disponivel= true
-        },
-        {
-          .id=3,
-          .nome="Ricardo",
-          .telefone="4568456",
-          .sede=2,
-          .disponivel= false
-        },
-        {
-          .id=4,
-          .nome="Pepega",
-          .telefone="4568456",
-          .sede=1,
-          .disponivel= true
-        }
-    };
+    plen=&length;
+    //gets information from database;
 
-    length=sizeof(test_list_motoqueiros)/sizeof(test_list_motoqueiros[0]);
+
+    struct motoqueiros *dbMotoqueiros, Motoqueiros[10];
+    dbMotoqueiros=&Motoqueiros;
+    get_motoqueiros_db(dbMotoqueiros,plen);
 
     while(!opt){
         //pseudo random number assign
         j=rand()%length;
         //missing condition for sede
-        if(test_list_motoqueiros[j].id && test_list_motoqueiros[j].disponivel){
-            ppedido->motoqueiro=test_list_motoqueiros[j];
+        if(dbMotoqueiros[j].id && dbMotoqueiros[j].disponivel){
+            ppedido->motoqueiro=dbMotoqueiros[j];
             opt=true;
         }
     }
@@ -989,67 +963,57 @@ struct produtos t;
         for (j = i + 1; j < n; j++) {
             if ( prod[j].sede < prod[i].sede) {
 
-                t.sede =  prod[i].sede;
-                prod[i].sede = prod[j].sede;
-                prod[j].sede = t.sede;
+                t =  prod[i];
+                prod[i] = prod[j];
+                prod[j] = t;
             }
         }
     }
 }
 
 void get_estoque(int opt){
-    int i,j, length;
+    system("@cls||clear");
+    int *plen, i,j, length, optSede=NULL,k=0;
+    plen=&length;
+    struct produtos *dbProdutos,Produtos[100] ;
+    dbProdutos= &Produtos;
+    //get produtos from database
+    get_produtos_db(dbProdutos, plen);
 
-     struct produtos *ptest, test_producto[]={
-        {
-            15,"dough", 2.55, 25, 1
-        },
-        {
-            18,"chesse", 2.55, 15, 1
-        },
-        {
-            25,"tomatoes", 4.55, 50, 2
-        },
-        {
-            1,"monster", 7.66, 50, 2
-        },
-        {
-            2,"onions", 2.33, 50, 0
-        },
-        {
-            3,"tempero", 1.55, 50, 0
-        },
-        {
-            4,"cheese", 3.55, 50, 1
-        },
-        {
-            5,"pepsi", 5.55, 50, 0
-        }
-    };
-
-    ptest= &test_producto;
-    length= sizeof(test_producto)/sizeof(test_producto[0]);
-    sort_estoque(length, ptest);
+    sort_estoque(*plen, dbProdutos);
 
     if(opt==1){
         printf("Qual sede quer pesquiçar ?\n 0= sede principal\n 1= sede en iranduba\n 2= sede terciaria\n");
         scanf("%d", &j);
          for (i = 0; i < length; i++)
-             if(test_producto[i].sede==j){
-               printf("%s , quantidade = %d na sede %d\n", test_producto[i].nome,test_producto[i].quantidade, test_producto[i].sede );
+             if(dbProdutos[i].sede==j){
+               printf("%s , quantidade = %d na sede %d\n", dbProdutos[i].nome, dbProdutos[i].quantidade, dbProdutos[i].sede );
              }
 
     }else if(opt==2){
-        for (i = 0; i < length; i++)
-            printf("%s , quantidade = %d na sede %d\n", test_producto[i].nome,test_producto[i].quantidade, test_producto[i].sede );
+            for (i = 0; i < length; i++){
+                if(optSede==NULL && k==0){
+                    optSede=dbProdutos[i].sede;
+                    printf("Produtos na sede %i\n\n", optSede);
+                    k++;
+                }
+                if(optSede!=dbProdutos[i].sede){
+                    optSede=dbProdutos[i].sede;
+                    printf("\n\nProdutos na sede %i\n\n", optSede);
+                }
 
+                printf("%s , quantidade = %d \n", dbProdutos[i].nome,dbProdutos[i].quantidade);
 
+        }
     }
+    printf("\nPress ENTER key to go back to the menu\n");
+    getch();
+    system("@cls||clear");
 }
 
  void show_estoque(){
  int opt;
-
+    system("@cls||clear");
     printf("\n1- Estoque por sede\n");
     printf("\n2- Estoque Total\n");
     scanf("%d", &opt);

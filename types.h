@@ -16,16 +16,16 @@ struct sede{
 
 struct produtos{
     int id;
-    char nome[Max];
+    char *nome;
     double prize;
-    int quantidade;
+    int quantidade;//kg ou items
     int sede;
 };
 
 struct motoqueiros{
     int id;
-    char nome[Max];
-    char telefone[Max];
+    char *nome;
+    char *telefone;
     int sede;
     bool disponivel;
 };
