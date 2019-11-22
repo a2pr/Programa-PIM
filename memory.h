@@ -4,7 +4,7 @@
 
 void create_cu_user(struct users *pusers, char login[10], char pass[10]){
     struct users *values;
-    int i, length_login=0,length_pass=0;
+    int length_login=0,length_pass=0;
     length_login=strlen(login);
     length_pass=strlen(pass);
 

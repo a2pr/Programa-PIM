@@ -69,19 +69,18 @@ bool check_user(struct users *current_user, int *logout){
 }
 
 bool check_cliente(char cpf[], struct clientes *pcliente){
-    int i=0;
-    int length;
-    //for testing purpose
-    struct clientes test_cliente[3]= {
-    {1,"789456","andres","Manaus","987456123"},
-    {1,"123456","simon","Peru","987456111"}
-    };
+    int *plen, i, length;
+    plen=&length;
 
-    length= sizeof(test_cliente)/sizeof(test_cliente[0]);
-    for(;i<length-1;i++ ){
-            if(strcmp(cpf,test_cliente[i].CPF)==0){
+    struct clientes *dbClientes,Clientes[20] ;
+    dbClientes=&Clientes;
+    //getting clientes from database
+    get_clientes_db(dbClientes,plen);
+
+    for(i=0;i<length-1;i++ ){
+            if(strcmp(cpf,dbClientes[i].CPF)==0){
                 printf("cliente no sistema!\n");
-                *pcliente= test_cliente[i];
+                *pcliente= dbClientes[i];
                 return true;
             }
     }
@@ -368,35 +367,38 @@ bool check_en_estoque(struct pedidos *ppedido){
 }
 
 void cadastrar_cliente(struct clientes *pcliente, char cpf[]){
-    int i, length;
-    //for testing
-    struct clientes test_cliente[3]= {
-    {1,"789456","andres","Manaus","987456123"},
-    {1,"123456","simon","Peru","987456111"}
-    };
+    int *plen, i, length;
+    char temp_nome[15], temp_end[50], temp_tel[15];
+     plen=&length;
 
-    length=sizeof(test_cliente)/sizeof(test_cliente[0]);
-    for(i=0;i<length;i++){
-        if(!test_cliente[i].id){
-            pcliente->id=i;
-            break;
-        }
-    }
+     struct clientes *dbClientes,Clientes[20] ;
+    dbClientes=&Clientes;
+    //getting clientes from database
+    get_clientes_db(dbClientes,plen);
+
+    pcliente->CPF=malloc(sizeof(char)*(strlen(cpf)+1));
     strcpy(pcliente->CPF, cpf);
     printf("\n Cliente não cadastrado!\nPress ENTER key para cadastrar\n");
     getch();
     system("@cls||clear");
 
     printf("\nNome do cliente: \n");
-    scanf("%s", pcliente->nome);
-    printf("\nEndereçõ do cliente: \n");
-    scanf("%s", pcliente->enderezo);
-    printf("\nTelefone do cliente: \n");
-    scanf("%s", pcliente->telefone);
+    scanf("%s", temp_nome);
+    pcliente->nome=malloc(sizeof(char)*(strlen(temp_nome)+1));
+    strcpy(pcliente->nome, temp_nome);
 
-    /*
-        Here should be added to database
-    */
+    printf("\nEndereçõ do cliente: \n");
+    scanf("%s",  temp_end);
+    pcliente->enderezo=malloc(sizeof(char)*(strlen(temp_end)+1));
+    strcpy(pcliente->enderezo, temp_end);
+
+    printf("\nTelefone do cliente: \n");
+    scanf("%s", temp_tel);
+    pcliente->telefone=malloc(sizeof(char)*(strlen(temp_tel)+1));
+    strcpy(pcliente->telefone, temp_tel);
+
+    //adding to database
+    add_clientes_db(pcliente);
 
     printf("cliente cadastrado !\n");
 
