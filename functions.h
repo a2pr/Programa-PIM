@@ -151,7 +151,7 @@ void choose_pizza(pedidos *ppedido, int *qtd_T){
 }
 
 void choose_bebida(pedidos *ppedido, int *qtd_T ){
-    int *plen, i,j,used, opt, Qtd, lenght,lenght_total;
+    int *plen, i,j,used, opt, Qtd, tamanho,  lenght,lenght_total;
     plen=&lenght;
 
     items *dbBebidas, Bebidas[get_entrycount(6)];
@@ -169,6 +169,10 @@ void choose_bebida(pedidos *ppedido, int *qtd_T ){
     }
     printf("Escolha sua bebida: ");
     scanf("%d", &opt);
+    printf("\nTamanho da pizza?");
+    printf("\n1- Pequena\n");
+    printf("\n3- Grande\n\n");
+    scanf("%d", &tamanho);
     printf("\nQuantidade desejada?");
     scanf("%d", &Qtd);
 
@@ -178,12 +182,14 @@ void choose_bebida(pedidos *ppedido, int *qtd_T ){
     //checks if opt and qtd not null
     if(opt && Qtd!=0){
         double total=0;
+        dbBebidas[opt-1].tamanho=tamanho;
+        double multiplier= get_multiplier((int) dbBebidas[opt-1].tamanho);
         int check=Qtd+used;
         //starts loop in first unsued space in pedido
         for(i=used; i<check; i++){
                     ppedido->items_pedido[i]= dbBebidas[opt-1];
                     ppedido->items_pedido[i].quantidade=1;
-                    total+= dbBebidas[opt-1].prize;
+                    total+= dbBebidas[opt-1].prize*multiplier;
         }
         ppedido->prize+=total;
         *qtd_T+=Qtd;
@@ -305,10 +311,11 @@ void set_time( pedidos *ppedido){
 
 void cadastrar_pedido(users *atendente, clientes *pcliente,  pedidos *ppedido){
     bool pedido_ok=false;
-
+    int *lenqtd, qtd;
+    lenqtd=&qtd;
     while(!pedido_ok){
-        int *lenqtd, length,i, qtd;
-        lenqtd=&qtd;
+        int  length,i;
+
 
         get_time_pedido(ppedido);
         //choose from menu
@@ -360,7 +367,7 @@ void cadastrar_pedido(users *atendente, clientes *pcliente,  pedidos *ppedido){
     //set sede by global variable
 
     //Pedido vai ser mandado para a base de dados;
-    add_pedidos(ppedido);
+    add_pedidos(ppedido, lenqtd);
     //clear variable
     clear_pedido(ppedido);
     printf("\n\n Pedido Cadastrado !");
@@ -374,18 +381,25 @@ void check_for_pedido(clientes *pcliente, char cpf[]){
     int *plen, i,k,length_p, length_i;
     plen=&length_p;
 
-    pedidos *dbPedidos, Pedidos[get_entrycount(1)];
+    pedidos *dbPedidos, Pedidos[get_entrycount(6)];
     dbPedidos=&Pedidos;
+
+    int *plenI,lenItem[get_entrycount(6)];
+    for(i=0;i<get_entrycount(6);i++){
+        lenItem[i]=0;
+    };
+    plenI=&lenItem;
     //getting info from db
-    get_pedidos(dbPedidos, plen);
+    get_pedidos(dbPedidos, plen, plenI);
 
     for(i=0; i<length_p;i++){
         if(strcmp(cpf,dbPedidos[i].cliente.CPF)==0){
-                length_i=sizeof(dbPedidos[i].items_pedido)/sizeof(dbPedidos[i].items_pedido[0]);
+                length_i=plenI[i];
                 printf("\n Para esse cpf temos os siguientes pedidos feitos\n");
+                printf("\n Pedido %d: \n",i+1);
                 for(k=0;k<length_i;k++){
                     if(dbPedidos[i].items_pedido[k].id){
-                        printf("\n Pedido %d: \n%s ----> prize: %.2f\n",k+1, dbPedidos[i].items_pedido[k].nome,dbPedidos[i].items_pedido[k].prize );
+                        printf("%s ----> prize: %.2f\n", dbPedidos[i].items_pedido[k].nome,dbPedidos[i].items_pedido[k].prize );
                     }
 
                 }
@@ -437,16 +451,19 @@ void check_for_pedido(clientes *pcliente, char cpf[]){
     printf("values assign !");
 }*/
 
-void cadastrar_pedido_promotion(users *atendente, clientes *pcliente,  pedidos *ppedido){
-     bool pedido_ok=false;
-      get_time_pedido(ppedido);
+void cadastrar_pedido_promotion(users *atendente, clientes *pcliente,  pedidos *ppedido, int *qtd){
+    bool pedido_ok=false;
+    get_time_pedido(ppedido);
+    ppedido->cancelado=0;
     while(!pedido_ok){
        int length,i;
         //showing results
-        length=sizeof(ppedido->items_pedido)/sizeof(ppedido->items_pedido[0]);
+        length=*qtd;
         for(i=0;i< length;i++){
-            if(ppedido->items_pedido[i].id){
+            if(ppedido->items_pedido[i].id!=NULL){
                 printf("\n %s quantidade de items: %d ; custo-> %.2f\n",ppedido->items_pedido[i].nome, ppedido->items_pedido[i].quantidade, ppedido->items_pedido[i].prize );
+            }else{
+                break;
             }
         }
         printf("-------------------\n");
@@ -485,7 +502,7 @@ void cadastrar_pedido_promotion(users *atendente, clientes *pcliente,  pedidos *
 
     //Pedido vai ser mandado para a base de dados;
 
-    add_pedidos(ppedido);
+    add_pedidos(ppedido, qtd);
     //clear variable
     clear_pedido(ppedido);
 
@@ -497,8 +514,10 @@ void cadastrar_pedido_promotion(users *atendente, clientes *pcliente,  pedidos *
 
 void show_promotion( users *atendente, clientes *pcliente,  pedidos *ppedido){
     system("@cls||clear");
-    int *plen, opt,i, length,tamanho, Qtd;
+    int *plen, opt,i, length,tamanho;
     plen=&length;
+    int *lenQtd,  Qtd;
+    lenQtd=&Qtd;
 
     //getting info db
     items *dbPromotions, Promotions[get_entrycount(1)];
@@ -528,6 +547,7 @@ void show_promotion( users *atendente, clientes *pcliente,  pedidos *ppedido){
         dbPromotions[opt-1].tamanho=tamanho;
         double multiplier= get_multiplier(dbPromotions[opt-1].tamanho);
         for(i=0; i<Qtd; i++){
+            create_item(ppedido->items_pedido, Qtd, Promotions, opt);
             ppedido->items_pedido[i]= dbPromotions[opt-1];
             ppedido->items_pedido[i].quantidade=1;
             total+= dbPromotions[opt-1].prize*multiplier;
@@ -536,7 +556,7 @@ void show_promotion( users *atendente, clientes *pcliente,  pedidos *ppedido){
         ppedido->prize=total;
     }
 
-    cadastrar_pedido_promotion(atendente,pcliente, ppedido);
+    cadastrar_pedido_promotion(atendente,pcliente, ppedido, lenQtd );
 }
 
  void get_clientes(){

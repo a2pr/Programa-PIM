@@ -1,8 +1,10 @@
 #ifndef DATABASE_IMPLEMENTATION_H_INCLUDED
 #define DATABASE_IMPLEMENTATION_H_INCLUDED
+#include "functions.h"
 #include <unistd.h>
 #include "types.h"
 #include <time.h>
+
 
 void close_db(FILE *db){
     fclose(db);
@@ -254,7 +256,32 @@ void get_produtos_db(produtos *test ,int *n){
 
 }
 
+bool check_cliente_db(char cpf[], clientes *pcliente){
+    int *plen, i, length;
+    plen=&length;
+
+    clientes *dbClientes,Clientes[get_entrycount(5)] ;
+    dbClientes=&Clientes;
+    //getting clientes from database
+    get_clientes_db(dbClientes,plen);
+
+    for(i=0;i<length-1;i++ ){
+            if(strcmp(cpf,dbClientes[i].CPF)==0){
+                printf("cliente no sistema!\n");
+                *pcliente= dbClientes[i];
+                return true;
+            }
+    }
+    printf("cliente sem registro\n");
+ return false;
+}
+
+
 void add_clientes_db(clientes *newCliente){
+    if(check_cliente_db(newCliente->CPF, newCliente)){
+        return;
+    }
+
     int entryCount;
     char db_name[2][25]={"./db/dbClientes.txt", "./db/dbClientes_temp.txt"};
     FILE *pdbs;
@@ -580,22 +607,22 @@ items get_items_by_id(int id ){
 
 }
 
-void get_pedidos(pedidos *test ,int *n){
+void get_pedidos(pedidos *test ,int *n, int *lenItem[]){
     int i,j,entryCount;
     char db_name[25]="./db/dbPedidos.txt";
     FILE *pdbs;
-    pedidos *ppedidos=NULL, dbpedidos;
+
 
      if(access(db_name,F_OK)==0){
         pdbs=fopen(db_name,"r");
         //printf("\n%s was open! \n", db_name);
     }
 
-    ppedidos=&dbpedidos;
+
     //gets entrys made
     fscanf(pdbs, "%i", &entryCount);
-
-    ppedidos=(pedidos *)calloc(entryCount ,(entryCount * sizeof(pedidos)));
+    pedidos *ppedidos, dbpedidos[entryCount];
+    ppedidos=&dbpedidos;
     if( ppedidos ==NULL){
             printf("Vetor n�o alocado");
     }
@@ -613,6 +640,7 @@ void get_pedidos(pedidos *test ,int *n){
         ppedidos[i].cliente= get_clientes_cpf(cpf_temp);
         //gets items length and assing memory
         fscanf(pdbs, "%i",&itemsLen);
+        lenItem[i]=itemsLen;
         ppedidos[i].items_pedido=calloc(itemsLen,sizeof(items));
         //gets pedido prize
         fscanf(pdbs, "%lf",&ppedidos[i].prize);
@@ -647,17 +675,21 @@ void get_pedidos(pedidos *test ,int *n){
             fscanf(pdbs, "%i",&ppedidos[i].items_pedido[j].promotion );
             fscanf(pdbs, "%i",&ppedidos[i].items_pedido[j].type );
 
-            printf("%i.%i id:%i-%s- prize: %.2f promotion:%i, qtd: %i , type: %i\n",i+1, j+1, ppedidos[i].items_pedido[j].id ,ppedidos[i].items_pedido[j].nome,ppedidos[i].items_pedido[j].prize, ppedidos[i].items_pedido[j].promotion, ppedidos[i].items_pedido[j].quantidade, ppedidos[i].items_pedido[j].type);
+            //printf("%i.%i id:%i-%s- prize: %.2f promotion:%i, qtd: %i , type: %i\n",i+1, j+1, ppedidos[i].items_pedido[j].id ,ppedidos[i].items_pedido[j].nome,ppedidos[i].items_pedido[j].prize, ppedidos[i].items_pedido[j].promotion, ppedidos[i].items_pedido[j].quantidade, ppedidos[i].items_pedido[j].type);
         }
         //printf("\n\n");
   }
+
+      for(i=0;i<entryCount;i++){
+        test[i]=ppedidos[i];
+      }
 
     *n=entryCount;
     close_db(pdbs);
     free(ppedidos);
 }
 
-void add_pedidos( pedidos *newPedido){
+void add_pedidos( pedidos *newPedido, int *itemsN){
     int i,j , entryCount;
     char db_name[2][25]={"./db/dbPedidos.txt", "./db/dbPedidos_temp.txt"};
     FILE *pdbs;
@@ -672,6 +704,7 @@ void add_pedidos( pedidos *newPedido){
     }
     //gets entrys made
     fscanf(pdbs, "%i", &entryCount);
+    int itemsLenfinal[entryCount+1];
     pedidos *ppedidos=NULL, dbpedidos[entryCount+1];
     ppedidos=&dbpedidos;
     ppedidos=(pedidos *)calloc(entryCount+1 ,(entryCount+1 * sizeof(pedidos)));
@@ -693,6 +726,7 @@ void add_pedidos( pedidos *newPedido){
         //gets items length and assing memory
         fscanf(pdbs, "%i",&itemsLen);
         ppedidos[i].items_pedido=calloc(itemsLen,sizeof(items));
+        itemsLenfinal[i]=itemsLen;
         //gets pedido prize
         fscanf(pdbs, "%lf",&ppedidos[i].prize);
 
@@ -712,7 +746,9 @@ void add_pedidos( pedidos *newPedido){
         //get time
         fscanf(pdbs, "%i",&time.tm_mday);
         fscanf(pdbs, "%i",&time.tm_mon);
+        time.tm_mon-=1;
         fscanf(pdbs, "%i",&time.tm_year);
+        time.tm_year-=1900;
         ppedidos[i].time=p;
         strftime(time_s, sizeof(time_s),"%x",ppedidos[i].time);
 
@@ -729,35 +765,36 @@ void add_pedidos( pedidos *newPedido){
         }
         printf("\n\n");
   }
-
+  printf("%i",*itemsN);
+    itemsLenfinal[entryCount]= *itemsN;
+    printf("new pedido length %i\n",itemsLenfinal[entryCount] );
     ppedidos[entryCount]=*newPedido;
     printf("%i. cpf: %s - prize: %.2f -motoqueiro:%s -atendente: %s - sede: %i -status:%i- time:  \n", i+1,  ppedidos[3].cliente.CPF, ppedidos[3].prize, ppedidos[3].motoqueiro.nome, ppedidos[3].atendente.login, ppedidos[3].sede, ppedidos[3].cancelado);
 
     fprintf(pdbs_temp,"%i\n", entryCount+1);
 
     for(int i=0;i<entryCount+1; i++){
-        int lenItems;
         char time_d[10];
         char time_m[10];
         char time_y[10];
-        ppedidos[i].time->tm_year-=1900;
         strftime(time_d, sizeof(time_d), "%d",ppedidos[i].time );
         strftime(time_m, sizeof(time_m), "%m",ppedidos[i].time );
         strftime(time_y, sizeof(time_y), "%Y",ppedidos[i].time);
 
-        lenItems= sizeof(ppedidos[i].items_pedido)/sizeof(ppedidos[i].items_pedido[0]);
-        fprintf(pdbs_temp,"%i %s %i ",strlen(ppedidos[i].cliente.CPF), lenItems, ppedidos[i].prize);
-        fprintf(pdbs_temp,"%i %i %i",ppedidos[i].motoqueiro.id,ppedidos[i].atendente.id, ppedidos[i].sede );
-        fprintf(pdbs_temp,"%i %s %s %s\n",ppedidos[i].cancelado, time_d, time_m, time_y);
-        for(j=0;j< lenItems ;j++){
-            fprintf(pdbs_temp," %i %i %i %i %i\n", ppedidos[i].items_pedido[j].id, strlen(ppedidos[i].items_pedido[j].tamanho) , ppedidos[i].items_pedido[j].tamanho, ppedidos[i].items_pedido[j].promotion, ppedidos[i].items_pedido[j].type );
+        fprintf(pdbs_temp,"%i %s %i %.0f",strlen(ppedidos[i].cliente.CPF), ppedidos[i].cliente.CPF, itemsLenfinal[i],  ppedidos[i].prize );
+        fprintf(pdbs_temp,"% i %i %i",ppedidos[i].motoqueiro.id,ppedidos[i].atendente.id, ppedidos[i].sede );
+        fprintf(pdbs_temp,"% i %s %s %s\n",ppedidos[i].cancelado, time_d, time_m, time_y);
+
+        for(j=0;j< itemsLenfinal[i] ;j++){
+            fprintf(pdbs_temp," %i %i ", ppedidos[i].items_pedido[j].id, ppedidos[i].items_pedido[j].tamanho);
+            fprintf(pdbs_temp,"%i %i\n", ppedidos[i].items_pedido[j].promotion, ppedidos[i].items_pedido[j].type );
         }
     }
 
     close_db(pdbs);
     close_db(pdbs_temp);
-    //remove(db_name[0]);
-    //rename(db_name[1], db_name[0]);
+    remove(db_name[0]);
+    rename(db_name[1], db_name[0]);
     free(ppedidos);
     printf("success!");
 }

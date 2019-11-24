@@ -23,7 +23,6 @@ void create_item(items *newItem, int qtd, items db[],int opt ){
     int i=0,j=0,nomeLen, prodLen=10;
     newItem= (items *)calloc(qtd, sizeof(items)*qtd);
 
-    //printf("%s ", db[opt-1].produto[0].nome);
     for(i=0;i<qtd; i++){
         nomeLen=strlen(db[opt-1].nome);
         //prodLen=sizeof(db[opt-1].produto)/sizeof(produtos);

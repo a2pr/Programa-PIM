@@ -12,7 +12,7 @@
 	"database_implementation.h"
 	"memory.h"
 
-1574624522 d:\documents\uni\2 periodo\pim\programa-pim\functions.h
+1574636088 d:\documents\uni\2 periodo\pim\programa-pim\functions.h
 	"types.h"
 	"faturamento.h"
 	"functions.h"
@@ -24,16 +24,17 @@
 1573449076 d:\documents\uni\2 periodo\pim\programa-pim\test-variables.h
 	"types.h"
 
-1574567594 d:\documents\uni\2 periodo\pim\programa-pim\faturamento.h
+1574635462 d:\documents\uni\2 periodo\pim\programa-pim\faturamento.h
 	"types.h"
 	"functions.h"
 	"database_implementation.h"
 
-1574625273 d:\documents\uni\2 periodo\pim\programa-pim\database_implementation.h
+1574635958 d:\documents\uni\2 periodo\pim\programa-pim\database_implementation.h
+	"functions.h"
 	<unistd.h>
 	"types.h"
 	<time.h>
 
-1574623792 d:\documents\uni\2 periodo\pim\programa-pim\memory.h
+1574635244 d:\documents\uni\2 periodo\pim\programa-pim\memory.h
 	"types.h"
 

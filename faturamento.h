@@ -23,7 +23,9 @@ void faturamento(){
 
     pedidos *dbPedidos, Pedidos[ get_entrycount(6)];
 
-    get_pedidos(dbPedidos, plen);
+    int *plenI,lenItem[get_entrycount(6)];
+    *plenI=&lenItem;
+    get_pedidos(dbPedidos, plen, plenI);
 
     int *plen_s,length_sabores;
     *plen_s= &length_sabores;
@@ -287,7 +289,9 @@ void vendas(){
 
         pedidos *dbPedidos, Pedidos[ get_entrycount(6)];
 
-        get_pedidos(dbPedidos, plen);
+        int *plenI,lenItem[get_entrycount(6)];
+        *plenI=&lenItem;
+        get_pedidos(dbPedidos, plen,plenI);
 
         int i, j, length_item, maiorInd;
         double  maior=0, sedes[3];
@@ -372,7 +376,9 @@ void previsao(){
 
         pedidos *dbPedidos, Pedidos[ get_entrycount(6)];
 
-        get_pedidos(dbPedidos, plen);
+        int *plenI,lenItem[get_entrycount(6)];
+        *plenI=&lenItem;
+        get_pedidos(dbPedidos, plen,plenI);
 
 
 }
