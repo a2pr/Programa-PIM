@@ -67,7 +67,7 @@ void faturamento(){
         }
 };
 
-    struct produtos test_producto[]={
+    produtos test_producto[]={
         {
             15,"dough", 2.55, 25
         },
@@ -79,7 +79,7 @@ void faturamento(){
         }
     };
 
-    struct items test_item[3]={
+    items test_item[3]={
         {
             .id=10,
             .nome= "Pizza portuguesa",
@@ -107,7 +107,7 @@ void faturamento(){
 
     };
 
-    struct clientes test_cliente[2]={
+    clientes test_cliente[2]={
         {
             .id=1,
             .CPF="789456",
@@ -125,7 +125,7 @@ void faturamento(){
 
     };
 
-    struct motoqueiros test_motoqueiro[2]={
+    motoqueiros test_motoqueiro[2]={
                   {
                      .id=1,
                     .nome="Julio",
@@ -143,7 +143,7 @@ void faturamento(){
                 }
             };
 
-    struct pedidos test_for_day[10]={
+    pedidos test_for_day[10]={
        {
             .cliente= test_cliente[0],
             .items_pedido[0]= test_item[0],
@@ -221,23 +221,23 @@ void faturamento(){
                     scanf("%d", &tempo);
                     break;
                 default:
-                    printf("Opção nao aceitada!");
+                    printf("Opï¿½ï¿½o nao aceitada!");
                     break;
             }
             break;
 
         default:
-            printf("Opção nao aceitada!");
+            printf("Opï¿½ï¿½o nao aceitada!");
             break;
 
     }
 
 
 
-    //struct pedidos test_for_month;
+    //pedidos test_for_month;
 
-    //struct pedidos test_for_multiple_sedes_day;
-    //struct pedidos test_for_multiple_sedes_month;
+    //pedidos test_for_multiple_sedes_day;
+    //pedidos test_for_multiple_sedes_month;
 
     //char time_s[50];
     struct tm *now= get_time_faturamento();
@@ -496,7 +496,7 @@ void vendas(){
             }
     };
 
-        struct produtos test_producto[]={
+        produtos test_producto[]={
             {
                 15,"dough", 2.55, 25
             },
@@ -508,7 +508,7 @@ void vendas(){
             }
         };
 
-        struct items test_item[3]={
+        items test_item[3]={
             {
                 .id=10,
                 .nome= "Pizza portuguesa",
@@ -536,7 +536,7 @@ void vendas(){
 
         };
 
-        struct clientes test_cliente[2]={
+        clientes test_cliente[2]={
             {
                 .id=1,
                 .CPF="789456",
@@ -554,7 +554,7 @@ void vendas(){
 
         };
 
-        struct motoqueiros test_motoqueiro[2]={
+        motoqueiros test_motoqueiro[2]={
                       {
                          .id=1,
                         .nome="Julio",
@@ -572,7 +572,7 @@ void vendas(){
                     }
                 };
 
-        struct pedidos test[10]={
+        pedidos test[10]={
             {
             .cliente= test_cliente[0],
             .items_pedido[0]= test_item[0],
@@ -757,7 +757,7 @@ void previsao(){
             }
     };
 
-        struct produtos test_producto[]={
+        produtos test_producto[]={
             {
                 15,"dough", 2.55, 25
             },
@@ -769,7 +769,7 @@ void previsao(){
             }
         };
 
-        struct items test_item[3]={
+        items test_item[3]={
             {
                 .id=10,
                 .nome= "Pizza portuguesa",
@@ -797,7 +797,7 @@ void previsao(){
 
         };
 
-        struct clientes test_cliente[2]={
+        clientes test_cliente[2]={
             {
                 .id=1,
                 .CPF="789456",
@@ -815,7 +815,7 @@ void previsao(){
 
         };
 
-        struct motoqueiros test_motoqueiro[2]={
+        motoqueiros test_motoqueiro[2]={
                       {
                          .id=1,
                         .nome="Julio",
@@ -833,7 +833,7 @@ void previsao(){
                     }
                 };
 
-        struct pedidos test[10]={
+        pedidos test[10]={
             {
             .cliente= test_cliente[0],
             .items_pedido[0]= test_item[0],

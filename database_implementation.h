@@ -32,7 +32,29 @@ void check_for_databases(){
     };
 }
 
-void get_users(struct users *test, int *n){
+int get_entrycount(int opt){
+   //opt will be db enter
+   int  entryCount;
+
+  char db_names[8][25]={
+    "./db/dbUsers.txt", "./db/dbItems.txt","./db/dbSede.txt","./db/dbMotoqueiros.txt",
+    "./db/dbProdutos.txt","./db/dbClientes.txt","./db/dbPedidos.txt","./db/dbFeedback.txt"
+    };
+
+     FILE *pdbs;
+
+      if(access(db_names[opt],F_OK)==0){
+        //db open
+        pdbs=fopen(db_names[opt],"r");
+        //printf("File %s open\n", db_names[opt]);
+      }
+
+      fscanf(pdbs, "%i", &entryCount);
+      fclose(pdbs);
+      return entryCount;
+}
+
+void get_users(users *test, int *n){
     int i, entryCount;
     char db_name[25]="./db/dbUsers.txt";
     FILE *pdbs;
@@ -44,12 +66,14 @@ void get_users(struct users *test, int *n){
 
     //gets entrys made
     fscanf(pdbs, "%i", &entryCount);
-    struct users *pusers=NULL, dbusers[entryCount];
+    users *pusers=NULL;
+    pusers=(users *)calloc(entryCount ,(entryCount * sizeof(users)));
+    users dbusers[entryCount];
     pusers=&dbusers;
-    pusers=(struct users *)calloc(entryCount ,(entryCount * sizeof(struct users)));
+
 
     if( pusers ==NULL){
-        printf("Vetor não alocado");
+        printf("Vetor nï¿½o alocado");
     }
 
     for(i=0; i<entryCount;i++){
@@ -76,7 +100,7 @@ void get_users(struct users *test, int *n){
     free(pusers);
 }
 
-void get_clientes_db(struct clientes *test ,int *n){
+void get_clientes_db(clientes *test ,int *n){
     int i,entryCount;
     char db_name[25]="./db/dbClientes.txt";
     FILE *pdbs;
@@ -89,12 +113,12 @@ void get_clientes_db(struct clientes *test ,int *n){
 
     //gets entrys made
     fscanf(pdbs, "%i", &entryCount);
-    struct clientes *pclientes=NULL, dbclientes[entryCount];
+    clientes *pclientes=NULL, dbclientes[entryCount];
     pclientes=&dbclientes;
-    pclientes=(struct clientes *)calloc(entryCount ,(entryCount * sizeof(struct clientes)));
+    pclientes=(clientes *)calloc(entryCount ,(entryCount * sizeof(clientes)));
 
      if( pclientes ==NULL){
-        printf("Vetor não alocado");
+        printf("Vetor nï¿½o alocado");
     }
 
     for(i=0; i<entryCount;i++){
@@ -107,7 +131,7 @@ void get_clientes_db(struct clientes *test ,int *n){
         pclientes[i].CPF= calloc(1,(sizeof(char)*(cpfLen+1)));
         fscanf(pdbs, "%s %i",pclientes[i].CPF ,&nomeLen);
 
-        //gets nome length, allocates memory, gets value and endereçõ length
+        //gets nome length, allocates memory, gets value and endereï¿½ï¿½ length
         pclientes[i].nome= calloc(1,sizeof(char)*(nomeLen+1));
         fscanf(pdbs, "%s %i",pclientes[i].nome ,&endLen);
 
@@ -130,7 +154,7 @@ void get_clientes_db(struct clientes *test ,int *n){
 
 }
 
-void get_motoqueiros_db(struct motoqueiros *test ,int *n){
+void get_motoqueiros_db(motoqueiros *test ,int *n){
     int i, entryCount;
     char db_name[25]="./db/dbMotoqueiros.txt";
     FILE *pdbs;
@@ -145,12 +169,12 @@ void get_motoqueiros_db(struct motoqueiros *test ,int *n){
 
     //gets entrys made
     fscanf(pdbs, "%i", &entryCount);
-    struct motoqueiros *pmotos=NULL, dbmotos[entryCount];
+    motoqueiros *pmotos=NULL, dbmotos;
     pmotos=&dbmotos;
-    pmotos=(struct motoqueiros *)calloc(entryCount ,(entryCount * sizeof(struct motoqueiros)));
+    pmotos=(motoqueiros *)calloc(entryCount ,(entryCount * sizeof(motoqueiros)));
 
     if( pmotos ==NULL){
-        printf("Vetor não alocado");
+        printf("Vetor nï¿½o alocado");
     }
 
     for(i=0; i<entryCount;i++){
@@ -165,7 +189,7 @@ void get_motoqueiros_db(struct motoqueiros *test ,int *n){
 
         //gets tlf length, allocates memory, gets value for telefone, sede, disponivel length
         pmotos[i].telefone= calloc(1,sizeof(char)*(tlfLen+1));
-        fscanf(pdbs, "%s %i %i",pmotos[i].telefone,&pmotos[i].sede, &pmotos[i].disponivel);
+        fscanf(pdbs, "%s %i %i",pmotos[i].telefone,(int *)&pmotos[i].sede,(int *) &pmotos[i].disponivel);
 
         //printf("%i. %i- %s - %s -sede:%i - %i\n", i+1,  pmotos[i].id, pmotos[i].nome, pmotos[i].telefone, pmotos[i].sede, pmotos[i].disponivel );
 
@@ -179,7 +203,7 @@ void get_motoqueiros_db(struct motoqueiros *test ,int *n){
     free(pmotos);
 }
 
-void get_produtos_db(struct produtos *test ,int *n){
+void get_produtos_db(produtos *test ,int *n){
 
     int i,entryCount;
     char db_name[25]="./db/dbProdutos.txt";
@@ -194,12 +218,12 @@ void get_produtos_db(struct produtos *test ,int *n){
 
     //gets entrys made
     fscanf(pdbs, "%i", &entryCount);
-    struct produtos *pprodutos=NULL, dbprodutos[entryCount];
+    produtos *pprodutos=NULL, dbprodutos[entryCount];
     pprodutos=&dbprodutos;
-    pprodutos=(struct produtos *)calloc(entryCount ,(entryCount * sizeof(struct produtos)));
+    pprodutos=(produtos *)calloc(entryCount ,(entryCount * sizeof(produtos)));
 
     if( pprodutos ==NULL){
-        printf("Vetor não alocado");
+        printf("Vetor nï¿½o alocado");
     }
 
     for(i=0; i<entryCount;i++){
@@ -211,10 +235,10 @@ void get_produtos_db(struct produtos *test ,int *n){
         fscanf(pdbs, "%i", &nomeLen);
         pprodutos[i].nome= calloc(1,sizeof(char)*(nomeLen+3));
         if( pprodutos[i].nome ==NULL){
-            printf("Vetor não alocado");
+            printf("Vetor nï¿½o alocado");
         }
         fgets(pprodutos[i].nome,nomeLen+3, pdbs);
-        //gets value for preço, quantidade, sede
+        //gets value for preï¿½o, quantidade, sede
         fscanf(pdbs, "%lf %i %i",&pprodutos[i].prize,&pprodutos[i].quantidade, &pprodutos[i].sede);
         //printf("%i. %i-%s- prize: %f -qtd:%i -sede: %i\n", i+1,  pprodutos[i].id, pprodutos[i].nome, pprodutos[i].prize, pprodutos[i].quantidade, pprodutos[i].sede );
     }
@@ -229,7 +253,7 @@ void get_produtos_db(struct produtos *test ,int *n){
 
 }
 
-void add_clientes_db(struct clientes *newCliente){
+void add_clientes_db(clientes *newCliente){
     int entryCount;
     char db_name[2][25]={"./db/dbClientes.txt", "./db/dbClientes_temp.txt"};
     FILE *pdbs;
@@ -243,9 +267,9 @@ void add_clientes_db(struct clientes *newCliente){
     //gets entry count in original file
     fscanf(pdbs, "%i", &entryCount);
     //allocates memory for database info
-    struct clientes*dbClientes= calloc(entryCount+1,sizeof(struct clientes)* entryCount+1);
+    clientes*dbClientes= calloc(entryCount+1,sizeof(clientes)* entryCount+1);
     if( dbClientes ==NULL){
-        printf("Vetor não alocado");
+        printf("Vetor nï¿½o alocado");
     }
 
     for(int i=0;i<entryCount;i++){
@@ -258,7 +282,7 @@ void add_clientes_db(struct clientes *newCliente){
         dbClientes[i].CPF= calloc(1,sizeof(char)*(cpfLen+1));
         fscanf(pdbs, "%s %i",dbClientes[i].CPF ,&nomeLen);
 
-        //gets nome length, allocates memory, gets value and endereçõ length
+        //gets nome length, allocates memory, gets value and endereï¿½ï¿½ length
         dbClientes[i].nome= calloc(1,sizeof(char)*(nomeLen+1));
         fscanf(pdbs, "%s %i",dbClientes[i].nome ,&endLen);
 
@@ -297,10 +321,129 @@ void add_clientes_db(struct clientes *newCliente){
     printf("success!");
 }
 
-struct produtos get_produtos_by_id(int id ){
+void get_items_db(items *test,int *n, int opt){
+    int i, j , entryCount;
+    char db_name[25]="./db/dbItems.txt";
+    FILE *pdbs;
+
+    if(access(db_name,F_OK)==0){
+        pdbs=fopen(db_name,"r");
+        //printf("\n%s was open! \n", db_name);
+    }
+
+    fscanf(pdbs, "%i", &entryCount);
+    //printf("entrys: %i \n",entryCount);
+    items *pitems=NULL, dbitems[entryCount];
+    pitems=&dbitems;
+
+    pitems=(items *)calloc(entryCount ,(entryCount * sizeof(items)));
+    if( pitems ==NULL){
+        printf("Vetor nï¿½o alocado");
+    }
+    //printf("sizeof pitems:%i \n",sizeof(pitems));
+    for(i=0; i<entryCount; i++){
+
+         //gets users id
+        fscanf(pdbs, "%i",&pitems[i].id);
+        int nomeLen, prodLen ,  tamanhoLen;
+
+        //gets nome
+        fscanf(pdbs, "%i", &nomeLen);
+        pitems[i].nome= calloc(1,sizeof(char)*(nomeLen+3));
+        if(  pitems[i].nome ==NULL){
+            printf("Vetor nï¿½o alocado");
+        }
+        fgets(pitems[i].nome,nomeLen+3, pdbs);
+
+        //gets prize
+        fscanf(pdbs, "%lf", &pitems[i].prize);
+
+        //gets tamanho of produtos
+        fscanf(pdbs, "%i", &prodLen );
+
+        pitems[i].produto=calloc(prodLen,sizeof(produtos)*(prodLen));
+        if(  pitems[i].produto ==NULL){
+            printf("Vetor nï¿½o alocado");
+        }
+        //gets quantidade
+        fscanf(pdbs, "%i", &pitems[i].quantidade);
+
+        //gets tamanho
+        fscanf(pdbs, "%i", &tamanhoLen);
+        pitems[i].tamanho=calloc(tamanhoLen,sizeof(int)*(tamanhoLen));
+        if(  pitems[i].tamanho ==NULL){
+            printf("Vetor nï¿½o alocado");
+        }
+        for(j=0;j<tamanhoLen;j++){
+            fscanf(pdbs, "%i", &pitems[i].tamanho[j]);
+        }
+
+        //get promotions
+        fscanf(pdbs, "%i", &pitems[i].promotion);
+
+        //get types
+        fscanf(pdbs, "%i", &pitems[i].type);
+
+        for(j=0; j<prodLen; j++){
+             //gets users id
+            fscanf(pdbs, " %i",&pitems[i].produto[j].id);
+            int nomeLen;
+            //gets nome length, allocates memory, gets value
+            fscanf(pdbs, "%i", &nomeLen);
+            pitems[i].produto[j].nome= calloc(1,sizeof(char)*(nomeLen+3));
+            if( pitems[i].produto[j].nome ==NULL){
+                printf("Vetor nï¿½o alocado");
+            }
+            fgets(pitems[i].produto[j].nome,nomeLen+3, pdbs);
+
+            //gets value for preï¿½o, quantidade, sede
+            fscanf(pdbs, "%lf",(float *)&pitems[i].produto[j].prize);
+            //printf("%i.%i. id:%i-%s- prize: %.2f\n",i+1, j+1,  pitems[i].produto[j].id, pitems[i].produto[j].nome, pitems[i].produto[j].prize);
+        }
+        //printf("%i. id:%i-%s- prize: %.2f promotion:%i, qtd: %i , type: %i\n", i+1, pitems[i].id ,pitems[i].nome, pitems[i].prize, pitems[i].promotion, pitems[i].quantidade,  pitems[i].type);
+    }
+
+    int entryCountPizza=0, entryCountBebidas=0;
+    j=0;
+    for(i=0; i<entryCount;i++){
+            if(opt==1){
+                if(pitems[i].type==1){
+                    test[j]=pitems[i];
+                    entryCountPizza++;
+                    j++;
+                }
+            }else{
+                if(pitems[i].type==2){
+                    test[j]=pitems[i];
+                    entryCountBebidas++;
+                    j++;
+                }
+            }
+     }
+
+     if(opt==1){
+        *n=entryCountPizza;
+     }else{
+        *n=entryCountBebidas;
+     }
+
+     if(opt==3){
+         for(i=0; i<entryCount;i++){
+           test[i]=pitems[i];
+        }
+        *n=entryCount;
+     }
+    // id; len of nome; prize; lenofprodutos; qtd; lenoftamanhos; tamanhos;promotion;type
+
+    close_db(pdbs);
+    free(pitems);
+}
+
+
+produtos get_produtos_by_id(int id ){
     int *plen=NULL,len,i;
     plen=&len;
-    struct produtos *ptest=NULL, test[100],fail;
+    produtos *ptest=NULL, test[100],fail;
     ptest=&test;
 
     get_produtos_db(ptest,plen);
@@ -314,5 +457,26 @@ struct produtos get_produtos_by_id(int id ){
     return fail;
 
 }
+
+items get_items_by_id(int id ){
+    int *plen=NULL,len,i;
+    plen=&len;
+    items *ptest=NULL, test[get_entrycount(1)], fail;
+    ptest=&test;
+
+    get_items_db(ptest,plen,3);
+
+    for(i=0; i<len;i++){
+        if(test[i].id==id){
+           return  test[i];
+        }
+    }
+    printf(" item not found with that id!\n");
+    return fail;
+
+
+}
+
+
 
 #endif // DATABASE_IMPLEMENTATION_H_INCLUDED

@@ -5,14 +5,14 @@
 #include "functions.h"
 #include "database_implementation.h"
 
-void  clear_pedido( struct pedidos *pedido){
+void  clear_pedido( pedidos *pedido){
 
-    struct pedidos void_pedido;
+    pedidos void_pedido;
 
     *pedido=void_pedido;
 }
 
-void get_time_pedido(struct pedidos *pedido){
+void get_time_pedido(pedidos *pedido){
     time_t now;
 
     struct tm *c_time;
@@ -23,7 +23,7 @@ void get_time_pedido(struct pedidos *pedido){
     pedido->time=c_time;
 }
 
-void get_time(struct feedback *fb){
+void get_time(feedback *fb){
 time_t now;
 
     struct tm *c_time;
@@ -42,12 +42,12 @@ void print_date(struct tm *ptime){
     printf("%s", date_to_print);
 }
 
-bool check_user(struct users *current_user, int *logout){
+bool check_user(users *current_user, int *logout){
     int *plen,i, lenght;
     plen=&lenght;
     //gets information from database;
 
-    struct users *dbUsers,Users[10] ;
+    users *dbUsers,Users[get_entrycount(0)] ;
     dbUsers=&Users;
     get_users(dbUsers,plen);
 
@@ -68,11 +68,11 @@ bool check_user(struct users *current_user, int *logout){
      return 0;
 }
 
-bool check_cliente(char cpf[], struct clientes *pcliente){
+bool check_cliente(char cpf[], clientes *pcliente){
     int *plen, i, length;
     plen=&length;
 
-    struct clientes *dbClientes,Clientes[20] ;
+    clientes *dbClientes,Clientes[get_entrycount(5)] ;
     dbClientes=&Clientes;
     //getting clientes from database
     get_clientes_db(dbClientes,plen);
@@ -103,10 +103,10 @@ double get_multiplier(int i){
     return 0;
 }
 
-void choose_pizza(struct pedidos *ppedido){
+void choose_pizza(pedidos *ppedido){
     int i, opt, Qtd, tamanho, lenght;
     //test pizzas
-    struct produtos test_producto[]={
+    produtos test_producto[]={
         {
             15,"dough", 2.55, 25
         },
@@ -118,7 +118,7 @@ void choose_pizza(struct pedidos *ppedido){
         }
     };
 
-    struct items test_pizzas[]={
+    items test_pizzas[]={
         {
             .id=10,
             .nome= "Pizza portuguesa",
@@ -176,7 +176,7 @@ void choose_pizza(struct pedidos *ppedido){
     if(opt && Qtd!=0){
         double total=0;
         test_pizzas[opt-1].tamanho=tamanho;
-        double multiplier= get_multiplier(test_pizzas[opt-1].tamanho);
+        double multiplier= get_multiplier((int)test_pizzas[opt-1].tamanho);
         for(i=0; i<Qtd; i++){
             ppedido->items_pedido[i]= test_pizzas[opt-1];
             ppedido->items_pedido[i].quantidade=1;
@@ -188,9 +188,9 @@ void choose_pizza(struct pedidos *ppedido){
     printf("\n%d pizzas adicionadas\n", Qtd);
 }
 
-void choose_bebida(struct pedidos *ppedido){
+void choose_bebida(pedidos *ppedido){
     int i,j,used, opt, Qtd, lenght,lenght_total;
-    struct produtos test_producto[]={
+    produtos test_producto[]={
         {
             30,"Monster", 2.55, 100
         },
@@ -202,7 +202,7 @@ void choose_bebida(struct pedidos *ppedido){
         }
     };
 
-    struct items test_bebidas[]={
+    items test_bebidas[]={
         {
             .id=20,
             .nome= "Monster",
@@ -272,10 +272,10 @@ void choose_bebida(struct pedidos *ppedido){
 }
 
 
-bool check_en_estoque(struct pedidos *ppedido){
+bool check_en_estoque(pedidos *ppedido){
     int i,j,length_e, length_p;
 
-    struct produtos test_producto[]={
+    produtos test_producto[]={
         {
             15,"dough", 2.55, 25
         },
@@ -287,7 +287,7 @@ bool check_en_estoque(struct pedidos *ppedido){
         }
     };
 
-    struct items test_estoque[]={
+    items test_estoque[]={
         {
             .id=10,
             .nome= "Pizza portuguesa",
@@ -366,19 +366,19 @@ bool check_en_estoque(struct pedidos *ppedido){
 
 }
 
-void cadastrar_cliente(struct clientes *pcliente, char cpf[]){
-    int *plen, i, length;
+void cadastrar_cliente(clientes *pcliente, char cpf[]){
+    int *plen, length;
     char temp_nome[15], temp_end[50], temp_tel[15];
      plen=&length;
 
-     struct clientes *dbClientes,Clientes[20] ;
+     clientes *dbClientes,Clientes[20] ;
     dbClientes=&Clientes;
     //getting clientes from database
     get_clientes_db(dbClientes,plen);
 
     pcliente->CPF=malloc(sizeof(char)*(strlen(cpf)+1));
     strcpy(pcliente->CPF, cpf);
-    printf("\n Cliente não cadastrado!\nPress ENTER key para cadastrar\n");
+    printf("\n Cliente nï¿½o cadastrado!\nPress ENTER key para cadastrar\n");
     getch();
     system("@cls||clear");
 
@@ -387,7 +387,7 @@ void cadastrar_cliente(struct clientes *pcliente, char cpf[]){
     pcliente->nome=malloc(sizeof(char)*(strlen(temp_nome)+1));
     strcpy(pcliente->nome, temp_nome);
 
-    printf("\nEndereçõ do cliente: \n");
+    printf("\nEndereï¿½ï¿½ do cliente: \n");
     scanf("%s",  temp_end);
     pcliente->enderezo=malloc(sizeof(char)*(strlen(temp_end)+1));
     strcpy(pcliente->enderezo, temp_end);
@@ -404,14 +404,14 @@ void cadastrar_cliente(struct clientes *pcliente, char cpf[]){
 
 }
 
-void set_motoqueiro( struct pedidos *ppedido){
+void set_motoqueiro( pedidos *ppedido){
     int *plen,length, j;
     bool opt=false;
     plen=&length;
     //gets information from database;
 
 
-    struct motoqueiros *dbMotoqueiros, Motoqueiros[10];
+    motoqueiros *dbMotoqueiros, Motoqueiros[10];
     dbMotoqueiros=&Motoqueiros;
     get_motoqueiros_db(dbMotoqueiros,plen);
 
@@ -428,14 +428,14 @@ void set_motoqueiro( struct pedidos *ppedido){
 
 }
 
-void set_time( struct pedidos *ppedido){
+void set_time( pedidos *ppedido){
     int i,length, multiplier,qtd, j=0;
     double time;
     length=sizeof(ppedido->items_pedido)/sizeof(ppedido->items_pedido[0]);
     //another logic for this should be added
     for(i=0;i<length;i++){
         if(ppedido->items_pedido[i].id){
-                multiplier=get_multiplier(ppedido->items_pedido[i].tamanho);
+                multiplier=get_multiplier((int)ppedido->items_pedido[i].tamanho);
                 qtd=ppedido->items_pedido[i].quantidade;
                 j+=(multiplier*qtd);
         }
@@ -454,7 +454,7 @@ void set_time( struct pedidos *ppedido){
 
 }
 
-void cadastrar_pedido(struct users *atendente, struct clientes *pcliente,  struct pedidos *ppedido){
+void cadastrar_pedido(users *atendente, clientes *pcliente,  pedidos *ppedido){
     bool pedido_ok=false;
 
     while(!pedido_ok){
@@ -481,7 +481,7 @@ void cadastrar_pedido(struct users *atendente, struct clientes *pcliente,  struc
 
         if(!check_en_estoque(ppedido)){
 
-                    memset(ppedido->items_pedido,0,10*sizeof(struct items));
+                    memset(ppedido->items_pedido,0,10*sizeof(items));
 
             printf("\n Items de pedido fora de estoque\nPress ENTER key to go back to menu\n");
             getch();
@@ -520,10 +520,10 @@ void cadastrar_pedido(struct users *atendente, struct clientes *pcliente,  struc
 }
 
 //needs to return pedidos by client
-void check_for_pedido(struct clientes *pcliente, char cpf[]){
+void check_for_pedido(clientes *pcliente, char cpf[]){
     int i,k,length_p, length_i;
     //for testing
-    struct produtos test_producto[]={
+    produtos test_producto[]={
         {
             15,"dough", 2.55, 25
         },
@@ -535,7 +535,7 @@ void check_for_pedido(struct clientes *pcliente, char cpf[]){
         }
     };
 
-    struct items test_item[2]={
+    items test_item[2]={
         {
             .id=10,
             .nome= "Pizza portuguesa",
@@ -555,7 +555,7 @@ void check_for_pedido(struct clientes *pcliente, char cpf[]){
 
     };
 
-    struct clientes test_cliente[2]={
+    clientes test_cliente[2]={
         {
             .id=1,
             .CPF="789456",
@@ -573,7 +573,7 @@ void check_for_pedido(struct clientes *pcliente, char cpf[]){
 
     };
 
-    struct motoqueiros test_motoqueiro[2]={
+    motoqueiros test_motoqueiro[2]={
                   {
                      .id=1,
                     .nome="Julio",
@@ -591,7 +591,7 @@ void check_for_pedido(struct clientes *pcliente, char cpf[]){
                 }
             };
 
-    struct pedidos test_pedidos[] = {
+    pedidos test_pedidos[] = {
             {
                 .cliente= test_cliente[0],
                 .items_pedido[0]= test_item[0],
@@ -630,11 +630,11 @@ void check_for_pedido(struct clientes *pcliente, char cpf[]){
     system("@cls||clear");
 }
 
-void get_menu(struct items (*menu)[Max]){
+void get_menu(items (*menu)[Max]){
     //for testing purpose
-    struct produtos test_produto[2]={{1,"item A", 5, 10}};
+    produtos test_produto[2]={{1,"item A", 5, 10}};
 
-    struct items test_items[]={
+    items test_items[]={
         {
             .id=1,
             "pizza A",
@@ -669,7 +669,7 @@ void get_menu(struct items (*menu)[Max]){
     printf("values assign !");
 }
 
-void cadastrar_pedido_promotion(struct users *atendente, struct clientes *pcliente,  struct pedidos *ppedido){
+void cadastrar_pedido_promotion(users *atendente, clientes *pcliente,  pedidos *ppedido){
      bool pedido_ok=false;
       get_time_pedido(ppedido);
     while(!pedido_ok){
@@ -687,7 +687,7 @@ void cadastrar_pedido_promotion(struct users *atendente, struct clientes *pclien
 
         if(!check_en_estoque(ppedido)){
 
-                    memset(ppedido->items_pedido,0,10*sizeof(struct items));
+                    memset(ppedido->items_pedido,0,10*sizeof(items));
 
             printf("\n Items de pedido fora de estoque\nPress ENTER key to go back to menu\n");
             getch();
@@ -727,12 +727,12 @@ void cadastrar_pedido_promotion(struct users *atendente, struct clientes *pclien
     system("@cls||clear");
 }
 
-void show_promotion(struct users *atendente, struct clientes *pcliente,  struct pedidos *ppedido){
+void show_promotion( users *atendente, clientes *pcliente,  pedidos *ppedido){
     system("@cls||clear");
     int opt,i, length,tamanho, Qtd;
 
     //for testing
-     struct produtos test_producto[]={
+     produtos test_producto[]={
         {
             30,"Monster", 2.55, 100
         },
@@ -744,7 +744,7 @@ void show_promotion(struct users *atendente, struct clientes *pcliente,  struct 
         }
     };
 
-    struct items test_promotions[]={
+    items test_promotions[]={
         {
             .id=10,
             .nome= "Pizza portuguesa",
@@ -807,7 +807,7 @@ void show_promotion(struct users *atendente, struct clientes *pcliente,  struct 
     };
 
     length= sizeof(test_promotions)/sizeof(test_promotions[0]);
-    printf("\n----------Nossas Promoções disponivels-----\n");
+    printf("\n----------Nossas Promoï¿½ï¿½es disponivels-----\n");
 
     for(i=0; i<length; i++){
         if(test_promotions[i].quantidade!=0 && test_promotions[i].promotion==true ){
@@ -815,7 +815,7 @@ void show_promotion(struct users *atendente, struct clientes *pcliente,  struct 
         }
     }
 
-    printf("Escolha sua promoção: ");
+    printf("Escolha sua promoï¿½ï¿½o: ");
     scanf("%d", &opt);
      printf("\nTamanho da pizza?");
     printf("\n1- Pequena\n");
@@ -846,7 +846,7 @@ void show_promotion(struct users *atendente, struct clientes *pcliente,  struct 
      int *plen, i, length;
      plen=&length;
 
-     struct clientes *dbClientes,Clientes[20] ;
+     clientes *dbClientes,Clientes[20] ;
      dbClientes=&Clientes;
 
      //get clientes from database
@@ -868,14 +868,14 @@ void show_promotion(struct users *atendente, struct clientes *pcliente,  struct 
     system("@cls||clear");
  }
 
- void get_or_do_feedback( struct clientes *pcliente){
+ void get_or_do_feedback( clientes *pcliente){
     int opt, i, length, type_of_comment;
     char cpf[100];
 
     int *plen,length_clientes;
     plen=&length_clientes;
 
-    struct clientes *dbClientes,Clientes[20] ;
+    clientes *dbClientes,Clientes[20] ;
     dbClientes=&Clientes;
 
      //get clientes from database not really necesary
@@ -886,7 +886,7 @@ void show_promotion(struct users *atendente, struct clientes *pcliente,  struct 
         printf(" %s - %s\n", dbClientes[i].enderezo, dbClientes[i].telefone);
      }*/
 
-    struct feedback test_fb[]={
+    feedback test_fb[]={
         {
             .cliente= dbClientes[0],
             .description="lorem impsom",
@@ -902,13 +902,13 @@ void show_promotion(struct users *atendente, struct clientes *pcliente,  struct 
 
     };
 
-    printf("\n1- Cadastra uma Reclamações ou sugestão\n");
+    printf("\n1- Cadastra uma Reclamaï¿½ï¿½es ou sugestï¿½o\n");
     printf("\n2- Feedback disponivel\n");
     scanf("%d", &opt);
     switch(opt){
         case 1:
             system("@cls||clear");
-            struct feedback *pfb,fb, clear_fb;
+            feedback *pfb,fb, clear_fb;
             pfb=&fb;
 
             printf("Inserir o CPF do cliente: \n");
@@ -921,7 +921,7 @@ void show_promotion(struct users *atendente, struct clientes *pcliente,  struct 
             printf("Inserir o feedback: \n");
             scanf("%s",  pfb->description);
 
-            printf("Tipo de feedback. \n1= reclamação\n0=suggestao: \n");
+            printf("Tipo de feedback. \n1= reclamaï¿½ï¿½o\n0=suggestao: \n");
             scanf("%d", &type_of_comment);
 
             pfb->type= type_of_comment;
@@ -958,10 +958,10 @@ void show_promotion(struct users *atendente, struct clientes *pcliente,  struct 
     }
  }
 
-void sort_estoque(int n, struct produtos *prod){
+void sort_estoque(int n, produtos *prod){
 
 int i, j ;
-struct produtos t;
+produtos t;
 
      for (i = 0; i < n; i++) {
 
@@ -980,7 +980,7 @@ void get_estoque(int opt){
     system("@cls||clear");
     int *plen, i,j, length, optSede=NULL,k=0;
     plen=&length;
-    struct produtos *dbProdutos,Produtos[100] ;
+    produtos *dbProdutos,Produtos[100] ;
     dbProdutos= &Produtos;
     //get produtos from database
     get_produtos_db(dbProdutos, plen);
@@ -988,7 +988,7 @@ void get_estoque(int opt){
     sort_estoque(*plen, dbProdutos);
 
     if(opt==1){
-        printf("Qual sede quer pesquiçar ?\n 0= sede principal\n 1= sede en iranduba\n 2= sede terciaria\n");
+        printf("Qual sede quer pesquiï¿½ar ?\n 0= sede principal\n 1= sede en iranduba\n 2= sede terciaria\n");
         scanf("%d", &j);
          for (i = 0; i < length; i++)
              if(dbProdutos[i].sede==j){

@@ -16,13 +16,13 @@ int main ()
 {
     char temp_login[10],temp_pass[10];
 
-    struct users *puser, current_user;
+    users *puser, current_user;
     puser=&current_user;
 
-    struct clientes *pcliente, cliente ;
+    clientes *pcliente, cliente ;
     pcliente= &cliente;
 
-    struct pedidos *pcu_pedido,cu_pedido;
+    pedidos *pcu_pedido,cu_pedido;
     pcu_pedido=&cu_pedido;
 
     int i=1, step=0, optG=0;
@@ -54,7 +54,7 @@ int main ()
 		printf("3- Promocoes \n");
 		if(puser->user_permissions==0){
             printf("4- Clientes cadastrados \n");
-            printf("5- Reclamações e sugestoes \n");
+            printf("5- Reclamaï¿½ï¿½es e sugestoes \n");
             printf("6- Estoque \n");
             printf("7- Gerenciamento\n");
 		}
@@ -68,7 +68,7 @@ int main ()
 			break;
 
 			case 2:
-			    printf("O Cliente esta cadastrado?\n Inserir 0 se não ou se é cadastrado inserir CPF: ");
+			    printf("O Cliente esta cadastrado?\n Inserir 0 se nï¿½o ou se ï¿½ cadastrado inserir CPF: ");
                 scanf("%s", cpf);
                 if(strcmp(cpf,"0")==0){
                     system("@cls||clear");
@@ -118,7 +118,7 @@ int main ()
                         previsao();
                         break;
                     default:
-                        printf("opção nao aceitada\n");
+                        printf("opï¿½ï¿½o nao aceitada\n");
                     break;
                 }
 
@@ -130,7 +130,7 @@ int main ()
 			break;
 
 			default:
-                printf("opção nao aceitada\n");
+                printf("opï¿½ï¿½o nao aceitada\n");
             break;
 
 		}

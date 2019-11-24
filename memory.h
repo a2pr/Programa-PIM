@@ -2,13 +2,13 @@
 #define MEMORY_H_INCLUDED
 #include "types.h"
 
-void create_cu_user(struct users *pusers, char login[10], char pass[10]){
-    struct users *values;
+void create_cu_user(users *pusers, char login[10], char pass[10]){
+    users *values;
     int length_login=0,length_pass=0;
     length_login=strlen(login);
     length_pass=strlen(pass);
 
-    values=(struct users *)malloc(sizeof(struct users));
+    values=(users *)malloc(sizeof(users));
     values->login=(char*)malloc(sizeof(char)*length_login);
     values->password=(char*)malloc(sizeof(char)*length_pass);
     strcpy(values->login,login);

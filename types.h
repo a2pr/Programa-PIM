@@ -1,73 +1,73 @@
 #ifndef TYPES_H_INCLUDED
 #define TYPES_H_INCLUDED
 
-struct users{
+typedef struct{
     int id;
     char *login;
     char *password;
     int user_permissions;
-};
+}users;
 
-struct sede{
+typedef struct{
     int id;
     char nome[Max];
     char enderezo[Max];
-};
+}sede;
 
-struct produtos{
+typedef struct{
     int id;
     char *nome;
     double prize;
     int quantidade;//kg ou items
     int sede;
-};
+}produtos;
 
-struct motoqueiros{
+typedef struct {
     int id;
     char *nome;
     char *telefone;
     int sede;
     bool disponivel;
-};
+}motoqueiros;
 
-struct items{
+typedef struct {
     int id;
-    char nome[Max];
+    char *nome;
     double prize;
-    struct produtos produto[Max];
+    produtos *produto;
     int quantidade;
-    int tamanho; //1- pequena; 2- mediana; 3- grande;
+    int *tamanho; //1- pequena; 2- mediana; 3- grande;
     bool promotion; // true or false;
     int type; //1- pizza; 2-bebida;
-};
+}items;
 
-struct clientes{
+typedef struct{
     int id;
     char *CPF;
     char *nome;
     char *enderezo;
     char *telefone;
-};
+}clientes;
 
-struct pedidos{
-    struct clientes cliente;
-    struct items items_pedido[10];
+typedef struct {
+    clientes cliente;
+    items items_pedido[10];
     double prize;
-    struct motoqueiros motoqueiro;
-    struct users atendente;
+    motoqueiros motoqueiro;
+    users atendente;
     int sede;
     bool cancelado; //cancelado
     struct tm *time;
-};
+}pedidos;
 
-struct feedback{
+typedef struct {
 
-    struct clientes cliente;
+    clientes cliente;
     char description[500];
-    int type; //0 suggestao/ 1 reclamação
+    int type; //0 suggestao/ 1 reclamaï¿½ï¿½o
     struct tm *time; //type struct tm that contains the value of the time; in database we only will save month, day and year
     int sede;
-};
+}feedback;
 
 #endif // TYPES_H_INCLUDED
 
