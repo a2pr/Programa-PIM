@@ -137,8 +137,8 @@ void get_motoqueiros_db(struct motoqueiros *test ,int *n){
 
 
      if(access(db_name,F_OK)==0){
-        //pdbs=fopen(db_name,"r");
-        printf("\n%s was open! \n", db_name);
+        pdbs=fopen(db_name,"r");
+       // printf("\n%s was open! \n", db_name);
     }
 
 
@@ -295,6 +295,24 @@ void add_clientes_db(struct clientes *newCliente){
     rename(db_name[1], db_name[0]);
     free(dbClientes);
     printf("success!");
+}
+
+struct produtos get_produtos_by_id(int id ){
+    int *plen=NULL,len,i;
+    plen=&len;
+    struct produtos *ptest=NULL, test[100],fail;
+    ptest=&test;
+
+    get_produtos_db(ptest,plen);
+
+    for(i=0; i<len;i++){
+        if(test[i].id==id){
+           return  test[i];
+        }
+    }
+    printf(" item not found with that id!\n");
+    return fail;
+
 }
 
 #endif // DATABASE_IMPLEMENTATION_H_INCLUDED

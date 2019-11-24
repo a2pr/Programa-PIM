@@ -468,9 +468,12 @@ void cadastrar_pedido(struct users *atendente, struct clientes *pcliente,  struc
         //showing results
         length=sizeof(ppedido->items_pedido)/sizeof(ppedido->items_pedido[0]);
         for(i=0;i< length;i++){
-            if(ppedido->items_pedido[i].id){
+            if(ppedido->items_pedido[i].id!=NULL){
                 printf("\n %s quantidade de items: %d ; custo-> %.2f\n",ppedido->items_pedido[i].nome, ppedido->items_pedido[i].quantidade, ppedido->items_pedido[i].prize );
+            }else{
+                break;
             }
+
         }
         printf("-------------------\n");
         printf("Conta ate agora: %.2f \n",ppedido->prize);

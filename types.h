@@ -38,6 +38,7 @@ struct items{
     int quantidade;
     int tamanho; //1- pequena; 2- mediana; 3- grande;
     bool promotion; // true or false;
+    int type; //1- pizza; 2-bebida;
 };
 
 struct clientes{
