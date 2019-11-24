@@ -1,5 +1,6 @@
 #ifndef TYPES_H_INCLUDED
 #define TYPES_H_INCLUDED
+#include <time.h>
 
 typedef struct{
     int id;
@@ -39,7 +40,7 @@ typedef struct {
     int *tamanho; //1- pequena; 2- mediana; 3- grande;
     bool promotion; // true or false;
     int type; //1- pizza; 2-bebida;
-}items;
+}items; //items, lenNome, nome, prize, lenprod, lenTamanho, tamanho, promotion, type
 
 typedef struct{
     int id;

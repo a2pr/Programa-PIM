@@ -11,6 +11,7 @@
 #include "functions.h"
 #include "database_implementation.h"
 #include "memory.h"
+#define cu_sede 0
 
 int main ()
 {
@@ -64,6 +65,8 @@ int main ()
 
 		switch(step){
 			case 1:
+                pcu_pedido->atendente=*puser;
+                pcu_pedido->sede=cu_sede;
 			    cadastrar_pedido(puser, pcliente, pcu_pedido);
 			break;
 
@@ -88,6 +91,8 @@ int main ()
 			break;
 
 			case 3:
+                pcu_pedido->atendente=*puser;
+                pcu_pedido->sede=cu_sede;
 			    show_promotion(puser, pcliente, pcu_pedido);//change
 			break;
 

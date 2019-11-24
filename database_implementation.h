@@ -2,6 +2,7 @@
 #define DATABASE_IMPLEMENTATION_H_INCLUDED
 #include <unistd.h>
 #include "types.h"
+#include <time.h>
 
 void close_db(FILE *db){
     fclose(db);
@@ -11,7 +12,7 @@ void close_db(FILE *db){
 void check_for_databases(){
     int i;
     char db_names[8][25]={
-    "./db/dbUser.txt", "./db/dbItems.txt","./db/dbSede.txt","./db/dbMotoqueiros.txt",
+    "./db/dbUsers.txt", "./db/dbItems.txt","./db/dbSede.txt","./db/dbMotoqueiros.txt",
     "./db/dbProdutos.txt","./db/dbClientes.txt","./db/dbPedidos.txt","./db/dbFeedback.txt"
     };
 
@@ -333,10 +334,10 @@ void get_items_db(items *test,int *n, int opt){
 
     fscanf(pdbs, "%i", &entryCount);
     //printf("entrys: %i \n",entryCount);
-    items *pitems=NULL, dbitems[entryCount];
+    items *pitems, dbitems[entryCount];
     pitems=&dbitems;
 
-    pitems=(items *)calloc(entryCount ,(entryCount * sizeof(items)));
+    //pitems=(items *)calloc(entryCount ,(entryCount * sizeof(items)));
     if( pitems ==NULL){
         printf("Vetor n�o alocado");
     }
@@ -547,7 +548,7 @@ clientes get_clientes_cpf( char cpf[]){
     clientes *ptest=NULL, test[get_entrycount(5)], fail;
     ptest=&test;
 
-    get_clientes(ptest,plen);
+    get_clientes_db(ptest,plen);
 
     //printf("cpf: %s\n",cpf);
     for(i=0; i<len;i++){
@@ -656,6 +657,109 @@ void get_pedidos(pedidos *test ,int *n){
     free(ppedidos);
 }
 
+void add_pedidos( pedidos *newPedido){
+    int i,j , entryCount;
+    char db_name[2][25]={"./db/dbPedidos.txt", "./db/dbPedidos_temp.txt"};
+    FILE *pdbs;
+    FILE *pdbs_temp;
 
+
+    if(access(db_name[0],F_OK)==0){
+        pdbs=fopen(db_name[0],"r");
+        pdbs_temp=fopen(db_name[1],"w");
+        //printf("\n%s was open! \n", db_name[0]);
+        //printf("\n%s was created! \n", db_name[1]);
+    }
+    //gets entrys made
+    fscanf(pdbs, "%i", &entryCount);
+    pedidos *ppedidos=NULL, dbpedidos[entryCount+1];
+    ppedidos=&dbpedidos;
+    ppedidos=(pedidos *)calloc(entryCount+1 ,(entryCount+1 * sizeof(pedidos)));
+    if( ppedidos ==NULL){
+            printf("Vetor n�o alocado");
+    }
+
+     for(i=0; i<entryCount;i++){
+        int cpfLen, itemsLen,idMoto, idAten;
+        struct tm *p, time;
+        p=&time;
+        char time_s[50];
+        //gets cliente
+        fscanf(pdbs, "%i",&cpfLen);
+        char cpf_temp[cpfLen+2];
+        fscanf(pdbs, "%s",&cpf_temp);
+
+        ppedidos[i].cliente= get_clientes_cpf(cpf_temp);
+        //gets items length and assing memory
+        fscanf(pdbs, "%i",&itemsLen);
+        ppedidos[i].items_pedido=calloc(itemsLen,sizeof(items));
+        //gets pedido prize
+        fscanf(pdbs, "%lf",&ppedidos[i].prize);
+
+        //get motoqueiro
+        fscanf(pdbs, "%i",&idMoto);
+        ppedidos[i].motoqueiro= get_motoqueiros_by_id(idMoto);
+        //get atendente
+        fscanf(pdbs, "%i",&idAten);
+        ppedidos[i].atendente= get_users_by_id(idAten);
+
+        //get sede
+        fscanf(pdbs, "%i",&ppedidos[i].sede);
+
+        //get canceledo status
+        fscanf(pdbs, "%i",&ppedidos[i].cancelado);
+
+        //get time
+        fscanf(pdbs, "%i",&time.tm_mday);
+        fscanf(pdbs, "%i",&time.tm_mon);
+        fscanf(pdbs, "%i",&time.tm_year);
+        ppedidos[i].time=p;
+        strftime(time_s, sizeof(time_s),"%x",ppedidos[i].time);
+
+        printf("%i. cpf: %s - prize: %.2f -motoqueiro:%s -atendente: %s - sede: %i -status:%i- time: %s \n", i+1,  ppedidos[i].cliente.CPF, ppedidos[i].prize, ppedidos[i].motoqueiro.nome, ppedidos[i].atendente.login, ppedidos[i].sede, ppedidos[i].cancelado, time_s );
+        for(j=0;j<itemsLen;j++){
+            int idItem;
+            fscanf(pdbs, " %d",&idItem);
+            ppedidos[i].items_pedido[j]=get_items_by_id(idItem);
+            fscanf(pdbs, "%i",&ppedidos[i].items_pedido[j].tamanho );
+            fscanf(pdbs, "%i",&ppedidos[i].items_pedido[j].promotion );
+            fscanf(pdbs, "%i",&ppedidos[i].items_pedido[j].type );
+
+            printf("%i.%i id:%i-%s- prize: %.2f promotion:%i, qtd: %i , type: %i\n",i+1, j+1, ppedidos[i].items_pedido[j].id ,ppedidos[i].items_pedido[j].nome,ppedidos[i].items_pedido[j].prize, ppedidos[i].items_pedido[j].promotion, ppedidos[i].items_pedido[j].quantidade, ppedidos[i].items_pedido[j].type);
+        }
+        printf("\n\n");
+  }
+
+    ppedidos[entryCount]=*newPedido;
+    printf("%i. cpf: %s - prize: %.2f -motoqueiro:%s -atendente: %s - sede: %i -status:%i- time:  \n", i+1,  ppedidos[3].cliente.CPF, ppedidos[3].prize, ppedidos[3].motoqueiro.nome, ppedidos[3].atendente.login, ppedidos[3].sede, ppedidos[3].cancelado);
+
+    fprintf(pdbs_temp,"%i\n", entryCount+1);
+
+    for(int i=0;i<entryCount+1; i++){
+        int lenItems;
+        char time_d[10];
+        char time_m[10];
+        char time_y[10];
+        ppedidos[i].time->tm_year-=1900;
+        strftime(time_d, sizeof(time_d), "%d",ppedidos[i].time );
+        strftime(time_m, sizeof(time_m), "%m",ppedidos[i].time );
+        strftime(time_y, sizeof(time_y), "%Y",ppedidos[i].time);
+
+        lenItems= sizeof(ppedidos[i].items_pedido)/sizeof(ppedidos[i].items_pedido[0]);
+        fprintf(pdbs_temp,"%i %s %i ",strlen(ppedidos[i].cliente.CPF), lenItems, ppedidos[i].prize);
+        fprintf(pdbs_temp,"%i %i %i",ppedidos[i].motoqueiro.id,ppedidos[i].atendente.id, ppedidos[i].sede );
+        fprintf(pdbs_temp,"%i %s %s %s\n",ppedidos[i].cancelado, time_d, time_m, time_y);
+        for(j=0;j< lenItems ;j++){
+            fprintf(pdbs_temp," %i %i %i %i %i\n", ppedidos[i].items_pedido[j].id, strlen(ppedidos[i].items_pedido[j].tamanho) , ppedidos[i].items_pedido[j].tamanho, ppedidos[i].items_pedido[j].promotion, ppedidos[i].items_pedido[j].type );
+        }
+    }
+
+    close_db(pdbs);
+    close_db(pdbs_temp);
+    //remove(db_name[0]);
+    //rename(db_name[1], db_name[0]);
+    free(ppedidos);
+    printf("success!");
+}
 
 #endif // DATABASE_IMPLEMENTATION_H_INCLUDED

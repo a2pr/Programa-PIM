@@ -19,4 +19,19 @@ void create_cu_user(users *pusers, char login[10], char pass[10]){
 
 }
 
+void create_item(items *newItem, int qtd, items db[],int opt ){
+    int i=0,j=0,nomeLen, prodLen=10;
+    newItem= (items *)calloc(qtd, sizeof(items)*qtd);
+
+    //printf("%s ", db[opt-1].produto[0].nome);
+    for(i=0;i<qtd; i++){
+        nomeLen=strlen(db[opt-1].nome);
+        //prodLen=sizeof(db[opt-1].produto)/sizeof(produtos);
+        newItem[i].nome=(char *)malloc(sizeof(char)*nomeLen);
+        newItem[i].produto=(produtos *)calloc(prodLen, sizeof(produtos)*prodLen);
+        newItem[i].tamanho=(int *)malloc(sizeof(int));
+    }
+
+}
+
 #endif // MEMORY_H_INCLUDED
