@@ -423,7 +423,7 @@ void get_items_db(items *test,int *n, int opt){
 
      if(opt==1){
         *n=entryCountPizza;
-     }else{
+     }else if(opt==2){
         *n=entryCountBebidas;
      }
 
@@ -440,6 +440,89 @@ void get_items_db(items *test,int *n, int opt){
 }
 
 
+void get_motoqueiros(motoqueiros *test ,int *n){
+    int i;
+    char db_name[25]="./db/dbMotoqueiros.txt";
+    FILE *pdbs;
+    int entryCount;
+    motoqueiros *pmotos=NULL, dbmotos;
+
+     if(access(db_name,F_OK)==0){
+        pdbs=fopen(db_name,"r");
+        //printf("\n%s was open! \n", db_name);
+    }
+
+    pmotos=&dbmotos;
+
+    //gets entrys made
+    fscanf(pdbs, "%i", &entryCount);
+
+    pmotos=(motoqueiros *)calloc(entryCount ,(entryCount * sizeof(motoqueiros)));
+    //printf("entryCount: %i\n",entryCount);
+    //printf("size of motoqueiros struct:%i\nsize of pmotos: %i\n\n",sizeof(motoqueiros),sizeof(pmotos));
+     if( pmotos ==NULL){
+        printf("Vetor n�o alocado");
+    }
+
+    for(i=0; i<entryCount;i++){
+        //gets users id
+        fscanf(pdbs, "%i",&pmotos[i].id);
+        int nomeLen, tlfLen;
+        //printf("%i",i);
+        //gets nome length, allocates memory, gets value and nome length
+        fscanf(pdbs, "%i", &nomeLen);
+        pmotos[i].nome= calloc(1,sizeof(char)*(nomeLen+1));
+        fscanf(pdbs, "%s %i",pmotos[i].nome ,&tlfLen);
+
+        //gets tlf length, allocates memory, gets value for telefone, sede, disponivel length
+        pmotos[i].telefone= calloc(1,sizeof(char)*(tlfLen+1));
+        fscanf(pdbs, "%s %i %i",pmotos[i].telefone,&pmotos[i].sede, &pmotos[i].disponivel);
+
+        //printf("%i. %i- %s - %s -sede:%i - %i\n", i+1,  pmotos[i].id, pmotos[i].nome, pmotos[i].telefone, pmotos[i].sede, pmotos[i].disponivel );
+        //printf(" %s - %s\n", pclientes[i].enderezo, pclientes[i].telefone);
+    }
+
+    for(i=0; i<entryCount;i++){
+            test[i]=pmotos[i];
+     }
+    *n=entryCount;
+    close_db(pdbs);
+    free(pmotos);
+}
+
+motoqueiros get_motoqueiros_by_id(int id){
+    int *plen=NULL,len,i;
+    plen=&len;
+    motoqueiros *ptest=NULL, test[get_entrycount(3)], fail;
+    ptest=&test;
+
+    get_motoqueiros(ptest,plen);
+    for(i=0; i<len;i++){
+        if(test[i].id==id ){
+           return  test[i];
+        }
+    }
+    printf(" item not found with that id!\n");
+    return fail;
+
+}
+
+users get_users_by_id(int id){
+    int *plen=NULL,len,i;
+    plen=&len;
+    users *ptest=NULL, test[get_entrycount(0)], fail;
+    ptest=&test;
+
+    get_users(ptest,plen);
+    for(i=0; i<len;i++){
+        if(test[i].id==id ){
+           return  test[i];
+        }
+    }
+    printf(" item not found with that id!\n");
+    return fail;
+}
+
 produtos get_produtos_by_id(int id ){
     int *plen=NULL,len,i;
     plen=&len;
@@ -454,6 +537,25 @@ produtos get_produtos_by_id(int id ){
         }
     }
     printf(" item not found with that id!\n");
+    return fail;
+
+}
+
+clientes get_clientes_cpf( char cpf[]){
+    int *plen=NULL,len,i;
+    plen=&len;
+    clientes *ptest=NULL, test[get_entrycount(5)], fail;
+    ptest=&test;
+
+    get_clientes(ptest,plen);
+
+    //printf("cpf: %s\n",cpf);
+    for(i=0; i<len;i++){
+        if(strcmp(test[i].CPF,cpf)==0 ){
+           return  test[i];
+        }
+    }
+    printf(" client not found with that id!\n");
     return fail;
 
 }
@@ -475,6 +577,83 @@ items get_items_by_id(int id ){
     return fail;
 
 
+}
+
+void get_pedidos(pedidos *test ,int *n){
+    int i,j,entryCount;
+    char db_name[25]="./db/dbPedidos.txt";
+    FILE *pdbs;
+    pedidos *ppedidos=NULL, dbpedidos;
+
+     if(access(db_name,F_OK)==0){
+        pdbs=fopen(db_name,"r");
+        //printf("\n%s was open! \n", db_name);
+    }
+
+    ppedidos=&dbpedidos;
+    //gets entrys made
+    fscanf(pdbs, "%i", &entryCount);
+
+    ppedidos=(pedidos *)calloc(entryCount ,(entryCount * sizeof(pedidos)));
+    if( ppedidos ==NULL){
+            printf("Vetor n�o alocado");
+    }
+    //printf("entryCount: %i\n",entryCount);
+    //printf("size of produtos struct:%i\nsize of pprodutos: %i\n\n",sizeof(pedidos),sizeof(*ppedidos));
+    for(i=0; i<entryCount;i++){
+        int cpfLen, itemsLen,idMoto, idAten;
+        struct tm *p, time;
+        p=&time;
+        char time_s[50];
+        //gets cliente
+        fscanf(pdbs, "%i",&cpfLen);
+        char cpf_temp[cpfLen];
+        fscanf(pdbs, "%s",&cpf_temp);
+        ppedidos[i].cliente= get_clientes_cpf(cpf_temp);
+        //gets items length and assing memory
+        fscanf(pdbs, "%i",&itemsLen);
+        ppedidos[i].items_pedido=calloc(itemsLen,sizeof(items));
+        //gets pedido prize
+        fscanf(pdbs, "%lf",&ppedidos[i].prize);
+
+        //get motoqueiro
+        fscanf(pdbs, "%i",&idMoto);
+        ppedidos[i].motoqueiro= get_motoqueiros_by_id(idMoto);
+
+        //get atendente
+        fscanf(pdbs, "%i",&idAten);
+        ppedidos[i].atendente= get_users_by_id(idAten);
+
+        //get sede
+        fscanf(pdbs, "%i",&ppedidos[i].sede);
+
+        //get canceledo status
+        fscanf(pdbs, "%i",&ppedidos[i].cancelado);
+
+        //get time
+        fscanf(pdbs, "%i",&time.tm_mday);
+        fscanf(pdbs, "%i",&time.tm_mon);
+        fscanf(pdbs, "%i",&time.tm_year);
+        ppedidos[i].time=p;
+        strftime(time_s, sizeof(time_s),"%x",ppedidos[i].time);
+
+        //printf("%i. cpf: %s - prize: %.2f -motoqueiro:%s -atendente: %s - sede: %i -status:%i- time: %s \n", i+1,  ppedidos[i].cliente.CPF, ppedidos[i].prize, ppedidos[i].motoqueiro.nome, ppedidos[i].atendente.login, ppedidos[i].sede, ppedidos[i].cancelado, time_s );
+        for(j=0;j<itemsLen;j++){
+            int idItem;
+            fscanf(pdbs, "%i",&idItem);
+            ppedidos[i].items_pedido[j]=get_items_by_id(idItem);
+            fscanf(pdbs, "%i",&ppedidos[i].items_pedido[j].tamanho );
+            fscanf(pdbs, "%i",&ppedidos[i].items_pedido[j].promotion );
+            fscanf(pdbs, "%i",&ppedidos[i].items_pedido[j].type );
+
+            printf("%i.%i id:%i-%s- prize: %.2f promotion:%i, qtd: %i , type: %i\n",i+1, j+1, ppedidos[i].items_pedido[j].id ,ppedidos[i].items_pedido[j].nome,ppedidos[i].items_pedido[j].prize, ppedidos[i].items_pedido[j].promotion, ppedidos[i].items_pedido[j].quantidade, ppedidos[i].items_pedido[j].type);
+        }
+        //printf("\n\n");
+  }
+
+    *n=entryCount;
+    close_db(pdbs);
+    free(ppedidos);
 }
 
 

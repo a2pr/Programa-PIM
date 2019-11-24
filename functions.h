@@ -24,7 +24,7 @@ void get_time_pedido(pedidos *pedido){
 }
 
 void get_time(feedback *fb){
-time_t now;
+    time_t now;
 
     struct tm *c_time;
 
@@ -104,62 +104,20 @@ double get_multiplier(int i){
 }
 
 void choose_pizza(pedidos *ppedido){
-    int i, opt, Qtd, tamanho, lenght;
-    //test pizzas
-    produtos test_producto[]={
-        {
-            15,"dough", 2.55, 25
-        },
-        {
-            18,"chesse", 2.55, 15
-        },
-        {
-            25,"tomatoes", 4.55, 50
-        }
-    };
+    int *plen, i, opt, Qtd, tamanho, lenght;
+    plen=&lenght;
 
-    items test_pizzas[]={
-        {
-            .id=10,
-            .nome= "Pizza portuguesa",
-            .prize= 15,
-            .produto[0]= test_producto[0],
-            .quantidade=4,
-            .promotion= true
-        },
-        {
-            .id=11,
-            .nome= "Pizza calabresa",
-            .prize= 15,
-            .produto[0]= test_producto[1],
-            .quantidade=4,
-            .promotion= false
-        },
-        {
-            .id=12,
-            .nome= "Pizza 4 queijos",
-            .prize= 15,
-            .produto= {test_producto[0],test_producto[2]},
-            .quantidade=4,
-            .promotion= false
-        },
-         {
-            .id=14,
-            .nome= "Pizza Doce",
-            .prize= 50,
-            .produto= {test_producto[0],test_producto[2]},
-            .quantidade=0,
-            .promotion= false
-        }
-    };
+    items *dbPizzas, Pizzas[get_entrycount(1)];
+    dbPizzas=&Pizzas;
+    //getting pizzas from db
+    get_items_db(dbPizzas,plen,1);
 
-    lenght= sizeof(test_pizzas)/sizeof(test_pizzas[0]);
     system("@cls||clear");
     printf("----------Nossas pizzas disponivels-----\n");
     for(i=0; i<lenght; i++){
 
-        if(test_pizzas[i].quantidade!=0){
-            printf(" %d-> %s , prize: %.2f \n", i+1, test_pizzas[i].nome, test_pizzas[i].prize);
+        if( dbPizzas[i].quantidade!=0){
+            printf(" %d-> %s , prize: %.2f \n", i+1,  dbPizzas[i].nome,  dbPizzas[i].prize);
         }
     }
         printf("Escolha sua pizza: ");
@@ -175,12 +133,12 @@ void choose_pizza(pedidos *ppedido){
 
     if(opt && Qtd!=0){
         double total=0;
-        test_pizzas[opt-1].tamanho=tamanho;
-        double multiplier= get_multiplier((int)test_pizzas[opt-1].tamanho);
+         dbPizzas[opt-1].tamanho=tamanho;
+        double multiplier= get_multiplier((int) dbPizzas[opt-1].tamanho);
         for(i=0; i<Qtd; i++){
-            ppedido->items_pedido[i]= test_pizzas[opt-1];
+            ppedido->items_pedido[i]=  dbPizzas[opt-1];
             ppedido->items_pedido[i].quantidade=1;
-            total+= test_pizzas[opt-1].prize*multiplier;
+            total+=  dbPizzas[opt-1].prize*multiplier;
 
         }
         ppedido->prize=total;
@@ -189,57 +147,20 @@ void choose_pizza(pedidos *ppedido){
 }
 
 void choose_bebida(pedidos *ppedido){
-    int i,j,used, opt, Qtd, lenght,lenght_total;
-    produtos test_producto[]={
-        {
-            30,"Monster", 2.55, 100
-        },
-        {
-            31,"Coca", 2.55, 20
-        },
-        {
-            35,"pepsi", 4.55, 20
-        }
-    };
+    int *plen, i,j,used, opt, Qtd, lenght,lenght_total;
+    plen=&lenght;
 
-    items test_bebidas[]={
-        {
-            .id=20,
-            .nome= "Monster",
-            .prize= 8.66,
-            .produto[0]= test_producto[0],
-            .quantidade=100,
-            .tamanho=1,
-            .promotion= true
-        },
-        {
-            .id=21,
-            .nome= "Coca-Cola",
-            .prize= 4.55,
-            .produto[0]= test_producto[1],
-            .quantidade=20,
-            .tamanho=1,
-            .promotion= false
-        },
-        {
-            .id=22,
-            .nome= "Pepsi",
-            .prize= 4.55,
-            .produto= {test_producto[2]},
-            .quantidade=20,
-            .tamanho=1,
-            .promotion= false
-        }
-    };
-
-    lenght= sizeof(test_bebidas)/sizeof(test_bebidas[0]);
+    items *dbBebidas, Bebidas[get_entrycount(6)];
+    dbBebidas=&Bebidas;
+    get_items_db(dbBebidas,plen,2);
+    
     lenght_total= sizeof(ppedido->items_pedido)/sizeof(ppedido->items_pedido[0]);
     printf("\n----------Nossas bebidas disponivels-----\n");
 
     for(i=0; i<lenght; i++){
 
-        if(test_bebidas[i].quantidade!=0){
-            printf(" %d-> %s , prize: %.2f \n", i+1, test_bebidas[i].nome, test_bebidas[i].prize);
+        if(dbBebidas[i].quantidade!=0){
+            printf(" %d-> %s , prize: %.2f \n", i+1, dbBebidas[i].nome, dbBebidas[i].prize);
         }
     }
     printf("Escolha sua bebida: ");
@@ -247,23 +168,23 @@ void choose_bebida(pedidos *ppedido){
     printf("\nQuantidade desejada?");
     scanf("%d", &Qtd);
 
-//checks pedido last added space index
+    //checks pedido last added space index
     for(j=0;j<lenght_total;j++){
         if(!ppedido->items_pedido[j].id){
             used=j;
             break;
         }
     }
-//checks if opt and qtd not null
+    //checks if opt and qtd not null
     if(opt && Qtd!=0){
         double total=0;
         int check=Qtd+used;
         //starts loop in first unsued space in pedido
         for(i=used; i<check; i++){
                 if(check<=lenght_total){
-                    ppedido->items_pedido[i]= test_bebidas[opt-1];
+                    ppedido->items_pedido[i]= dbBebidas[opt-1];
                     ppedido->items_pedido[i].quantidade=1;
-                    total+= test_bebidas[opt-1].prize;
+                    total+= dbBebidas[opt-1].prize;
                 }
         }
         ppedido->prize+=total;
@@ -273,90 +194,21 @@ void choose_bebida(pedidos *ppedido){
 
 
 bool check_en_estoque(pedidos *ppedido){
-    int i,j,length_e, length_p;
+    int *plen,i,j,length_e, length_p;
+    plen=&length_e;
 
-    produtos test_producto[]={
-        {
-            15,"dough", 2.55, 25
-        },
-        {
-            18,"chesse", 2.55, 15
-        },
-        {
-            25,"tomatoes", 4.55, 50
-        }
-    };
+    items *dbEstoques, Estoques[get_entrycount(1)];
+    dbEstoques=&Estoques;
+    //getting pizzas from db
+    get_items_db(dbEstoques,plen,1);
 
-    items test_estoque[]={
-        {
-            .id=10,
-            .nome= "Pizza portuguesa",
-            .prize= 15,
-            .produto[0]= test_producto[0],
-            .quantidade=5,
-            .promotion= true
-        },
-        {
-            .id=11,
-            .nome= "Pizza calabresa",
-            .prize= 15,
-            .produto[0]= test_producto[1],
-            .quantidade=3,
-            .promotion= false
-        },
-        {
-            .id=12,
-            .nome= "Pizza 4 queijos",
-            .prize= 15,
-            .produto= {test_producto[0],test_producto[2]},
-            .quantidade=2,
-            .promotion= false
-        },
-         {
-            .id=14,
-            .nome= "Pizza Doce",
-            .prize= 50,
-            .produto= {test_producto[0],test_producto[2]},
-            .quantidade=0,
-            .promotion= false
-        },
-        {
-            .id=20,
-            .nome= "Monster",
-            .prize= 8.66,
-            .produto[0]= test_producto[0],
-            .quantidade=100,
-            .tamanho=1,
-            .promotion= true
-        },
-        {
-            .id=21,
-            .nome= "Coca-Cola",
-            .prize= 4.55,
-            .produto[0]= test_producto[1],
-            .quantidade=20,
-            .tamanho=1,
-            .promotion= false
-        },
-        {
-            .id=22,
-            .nome= "Pepsi",
-            .prize= 4.55,
-            .produto= {test_producto[2]},
-            .quantidade=2,
-            .tamanho=1,
-            .promotion= false
-        }
-    };
-
-    length_e=sizeof(test_estoque)/sizeof(test_estoque[0]);
     length_p=sizeof(ppedido->items_pedido)/sizeof(ppedido->items_pedido[0]);
 
     for(i=0; i<length_p;i++){
         for(j=0; j<length_e;j++){
-            if(ppedido->items_pedido[i].id == test_estoque[j].id){
-                test_estoque[j].quantidade-=ppedido->items_pedido[i].quantidade;
-                if(test_estoque[j].quantidade<=0 ){
+            if(ppedido->items_pedido[i].id == dbEstoques[j].id){
+                dbEstoques[j].quantidade-=ppedido->items_pedido[i].quantidade;
+                if(dbEstoques[j].quantidade<=0 ){
                     return false;
                 }
             }
@@ -409,9 +261,7 @@ void set_motoqueiro( pedidos *ppedido){
     bool opt=false;
     plen=&length;
     //gets information from database;
-
-
-    motoqueiros *dbMotoqueiros, Motoqueiros[10];
+    motoqueiros *dbMotoqueiros, Motoqueiros[get_entrycount(3)];
     dbMotoqueiros=&Motoqueiros;
     get_motoqueiros_db(dbMotoqueiros,plen);
 
@@ -521,103 +371,21 @@ void cadastrar_pedido(users *atendente, clientes *pcliente,  pedidos *ppedido){
 
 //needs to return pedidos by client
 void check_for_pedido(clientes *pcliente, char cpf[]){
-    int i,k,length_p, length_i;
-    //for testing
-    produtos test_producto[]={
-        {
-            15,"dough", 2.55, 25
-        },
-        {
-            18,"chesse", 2.55, 15
-        },
-        {
-            25,"tomatoes", 4.55, 50
-        }
-    };
+    int *plen, i,k,length_p, length_i;
+    plen=&length_p;
 
-    items test_item[2]={
-        {
-            .id=10,
-            .nome= "Pizza portuguesa",
-            .prize= 15,
-            .produto[0]= test_producto[0],
-            .quantidade=4,
-            .promotion= true
-        },
-        {
-            .id=11,
-            .nome= "Pizza calabresa",
-            .prize= 15,
-            .produto[0]= test_producto[1],
-            .quantidade=4,
-            .promotion= false
-        }
+    pedidos *dbPedidos, Pedidos[get_entrycount(1)];
+    dbPedidos=&Pedidos;
+    //getting info from db
+    get_pedidos(dbPedidos, plen);
 
-    };
-
-    clientes test_cliente[2]={
-        {
-            .id=1,
-            .CPF="789456",
-            .nome="andres",
-            .enderezo="Manaus",
-            .telefone="987456123"
-        },
-        {
-            .id=2,
-            .CPF="7123456",
-            .nome="Simon",
-            .enderezo="Peru",
-            .telefone="9874565698"
-        }
-
-    };
-
-    motoqueiros test_motoqueiro[2]={
-                  {
-                     .id=1,
-                    .nome="Julio",
-                    .telefone="789456",
-                    .sede=1,
-                    .disponivel= true
-
-                  },
-                   {
-                    .id=2,
-                  .nome="Manuel",
-                  .telefone="4568",
-                  .sede=1,
-                  .disponivel= true
-                }
-            };
-
-    pedidos test_pedidos[] = {
-            {
-                .cliente= test_cliente[0],
-                .items_pedido[0]= test_item[0],
-                .prize= 15 ,
-                .motoqueiro= test_motoqueiro[0],
-                .atendente= 2,
-                .sede=1
-            },
-            {
-                .cliente= test_cliente[1],
-                .items_pedido[0]= test_item[1],
-                .prize= 15 ,
-                .motoqueiro= test_motoqueiro[1],
-                .atendente= 2,
-                .sede=1
-            }
-        };
-
-    length_p=sizeof(test_pedidos)/sizeof(test_pedidos[0]);
     for(i=0; i<length_p;i++){
-        if(strcmp(cpf,test_pedidos[i].cliente.CPF)==0){
-                length_i=sizeof(test_pedidos[i].items_pedido)/sizeof(test_pedidos[i].items_pedido[0]);
+        if(strcmp(cpf,dbPedidos[i].cliente.CPF)==0){
+                length_i=sizeof(dbPedidos[i].items_pedido)/sizeof(dbPedidos[i].items_pedido[0]);
                 printf("\n Para esse cpf temos os siguientes pedidos feitos\n");
                 for(k=0;k<length_i;k++){
-                    if(test_pedidos[i].items_pedido[k].id){
-                        printf("\n Pedido %d: \n%s ----> prize: %.2f\n",k+1, test_pedidos[i].items_pedido[k].nome,test_pedidos[i].items_pedido[k].prize );
+                    if(dbPedidos[i].items_pedido[k].id){
+                        printf("\n Pedido %d: \n%s ----> prize: %.2f\n",k+1, dbPedidos[i].items_pedido[k].nome,dbPedidos[i].items_pedido[k].prize );
                     }
 
                 }
@@ -630,7 +398,7 @@ void check_for_pedido(clientes *pcliente, char cpf[]){
     system("@cls||clear");
 }
 
-void get_menu(items (*menu)[Max]){
+/* void get_menu(items (*menu)[Max]){
     //for testing purpose
     produtos test_produto[2]={{1,"item A", 5, 10}};
 
@@ -667,7 +435,7 @@ void get_menu(items (*menu)[Max]){
         //printf("produtos usados:\n id: %d \n item name:%s\nprize: %.2f \n Quantidade: %d\n",(*menu[i]).produto->id, (*menu[i]).produto->nome,(*menu[i]).produto->prize,  (*menu[i]).produto->quantidade  );
     }
     printf("values assign !");
-}
+}*/
 
 void cadastrar_pedido_promotion(users *atendente, clientes *pcliente,  pedidos *ppedido){
      bool pedido_ok=false;
@@ -729,89 +497,19 @@ void cadastrar_pedido_promotion(users *atendente, clientes *pcliente,  pedidos *
 
 void show_promotion( users *atendente, clientes *pcliente,  pedidos *ppedido){
     system("@cls||clear");
-    int opt,i, length,tamanho, Qtd;
+    int *plen, opt,i, length,tamanho, Qtd;
+    plen=&length;
 
-    //for testing
-     produtos test_producto[]={
-        {
-            30,"Monster", 2.55, 100
-        },
-        {
-            31,"Coca", 2.55, 20
-        },
-        {
-            35,"pepsi", 4.55, 20
-        }
-    };
-
-    items test_promotions[]={
-        {
-            .id=10,
-            .nome= "Pizza portuguesa",
-            .prize= 15,
-            .produto[0]= test_producto[0],
-            .quantidade=4,
-            .promotion= true
-        },
-        {
-            .id=11,
-            .nome= "Pizza calabresa",
-            .prize= 15,
-            .produto[0]= test_producto[1],
-            .quantidade=4,
-            .promotion= false
-        },
-        {
-            .id=12,
-            .nome= "Pizza 4 queijos",
-            .prize= 15,
-            .produto= {test_producto[0],test_producto[2]},
-            .quantidade=4,
-            .promotion= false
-        },
-         {
-            .id=14,
-            .nome= "Pizza Doce",
-            .prize= 50,
-            .produto= {test_producto[0],test_producto[2]},
-            .quantidade=0,
-            .promotion= false
-        },
-        {
-            .id=20,
-            .nome= "Monster",
-            .prize= 8.66,
-            .produto[0]= test_producto[0],
-            .quantidade=100,
-            .tamanho=1,
-            .promotion= true
-        },
-        {
-            .id=21,
-            .nome= "Coca-Cola",
-            .prize= 4.55,
-            .produto[0]= test_producto[1],
-            .quantidade=20,
-            .tamanho=1,
-            .promotion= false
-        },
-        {
-            .id=22,
-            .nome= "Pepsi",
-            .prize= 4.55,
-            .produto= {test_producto[2]},
-            .quantidade=20,
-            .tamanho=1,
-            .promotion= false
-        }
-    };
-
-    length= sizeof(test_promotions)/sizeof(test_promotions[0]);
+    //getting info db
+    items *dbPromotions, Promotions[get_entrycount(1)];
+    dbPromotions=&Promotions;
+    get_items_db(dbPromotions,plen,3);
+    
     printf("\n----------Nossas Promo��es disponivels-----\n");
 
     for(i=0; i<length; i++){
-        if(test_promotions[i].quantidade!=0 && test_promotions[i].promotion==true ){
-            printf(" %d-> %s , prize: %.2f \n", i+1, test_promotions[i].nome, test_promotions[i].prize);
+        if(dbPromotions[i].quantidade!=0 && dbPromotions[i].promotion==true ){
+            printf(" %d-> %s , prize: %.2f \n", i+1, dbPromotions[i].nome, dbPromotions[i].prize);
         }
     }
 
@@ -827,12 +525,12 @@ void show_promotion( users *atendente, clientes *pcliente,  pedidos *ppedido){
 
      if(opt && Qtd!=0){
         double total=0;
-        test_promotions[opt-1].tamanho=tamanho;
-        double multiplier= get_multiplier(test_promotions[opt-1].tamanho);
+        dbPromotions[opt-1].tamanho=tamanho;
+        double multiplier= get_multiplier(dbPromotions[opt-1].tamanho);
         for(i=0; i<Qtd; i++){
-            ppedido->items_pedido[i]= test_promotions[opt-1];
+            ppedido->items_pedido[i]= dbPromotions[opt-1];
             ppedido->items_pedido[i].quantidade=1;
-            total+= test_promotions[opt-1].prize*multiplier;
+            total+= dbPromotions[opt-1].prize*multiplier;
 
         }
         ppedido->prize=total;
@@ -960,8 +658,8 @@ void show_promotion( users *atendente, clientes *pcliente,  pedidos *ppedido){
 
 void sort_estoque(int n, produtos *prod){
 
-int i, j ;
-produtos t;
+    int i, j ;
+    produtos t;
 
      for (i = 0; i < n; i++) {
 
@@ -1014,7 +712,7 @@ void get_estoque(int opt){
     printf("\nPress ENTER key to go back to the menu\n");
     getch();
     system("@cls||clear");
-}
+    }
 
  void show_estoque(){
  int opt;

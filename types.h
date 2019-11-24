@@ -51,7 +51,7 @@ typedef struct{
 
 typedef struct {
     clientes cliente;
-    items items_pedido[10];
+    items *items_pedido;
     double prize;
     motoqueiros motoqueiro;
     users atendente;
