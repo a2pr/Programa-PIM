@@ -31,8 +31,23 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="database_implementation.h">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="faturamento.h">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="functions.h">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="memory.h">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="types.h">
+			<Option target="&lt;{~None~}&gt;" />
 		</Unit>
 		<Extensions>
 			<code_completion />

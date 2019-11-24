@@ -1,5 +1,40 @@
 # depslib dependency file v1.0
-1572733406 source:d:\documents\uni\2 periodo\pim\programa-pim\main.c
+1574620353 source:d:\documents\uni\2 periodo\pim\programa-pim\main.c
 	<stdio.h>
 	<stdlib.h>
+	<stdbool.h>
+	<string.h>
+	<conio.h>
+	<time.h>
+	"functions.h"
+	"types.h"
+	"functions.h"
+	"database_implementation.h"
+	"memory.h"
+
+1574636088 d:\documents\uni\2 periodo\pim\programa-pim\functions.h
+	"types.h"
+	"faturamento.h"
+	"functions.h"
+	"database_implementation.h"
+
+1574625245 d:\documents\uni\2 periodo\pim\programa-pim\types.h
+	<time.h>
+
+1573449076 d:\documents\uni\2 periodo\pim\programa-pim\test-variables.h
+	"types.h"
+
+1574635462 d:\documents\uni\2 periodo\pim\programa-pim\faturamento.h
+	"types.h"
+	"functions.h"
+	"database_implementation.h"
+
+1574635958 d:\documents\uni\2 periodo\pim\programa-pim\database_implementation.h
+	"functions.h"
+	<unistd.h>
+	"types.h"
+	<time.h>
+
+1574635244 d:\documents\uni\2 periodo\pim\programa-pim\memory.h
+	"types.h"
 
