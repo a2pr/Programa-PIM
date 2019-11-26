@@ -621,7 +621,7 @@ void get_pedidos(pedidos *test ,int *n, int *lenItem[]){
 
     //gets entrys made
     fscanf(pdbs, "%i", &entryCount);
-    pedidos *ppedidos, dbpedidos[entryCount];
+    pedidos *ppedidos, dbpedidos[entryCount], ended[entryCount];
     ppedidos=&dbpedidos;
     if( ppedidos ==NULL){
             printf("Vetor n�o alocado");
@@ -663,10 +663,18 @@ void get_pedidos(pedidos *test ,int *n, int *lenItem[]){
         fscanf(pdbs, "%i",&time.tm_mday);
         fscanf(pdbs, "%i",&time.tm_mon);
         fscanf(pdbs, "%i",&time.tm_year);
-        ppedidos[i].time=p;
-        strftime(time_s, sizeof(time_s),"%x",ppedidos[i].time);
+        time.tm_mon-=1;
+        time.tm_year-=1900;
+        ppedidos[i].time=calloc(1, sizeof(struct tm));
+        ppedidos[i].time->tm_mday=time.tm_mday;
+        ppedidos[i].time->tm_mon=time.tm_mon;
+        ppedidos[i].time->tm_year=time.tm_year;
+        char time_s_d[10], time_s_m[10];
+        strftime(time_s, sizeof(time_s),"%Y",ppedidos[i].time);
+        strftime(time_s_m, sizeof(time_s_m),"%m",ppedidos[i].time);
+        strftime(time_s_d, sizeof(time_s_d),"%d",ppedidos[i].time);
 
-        //printf("%i. cpf: %s - prize: %.2f -motoqueiro:%s -atendente: %s - sede: %i -status:%i- time: %s \n", i+1,  ppedidos[i].cliente.CPF, ppedidos[i].prize, ppedidos[i].motoqueiro.nome, ppedidos[i].atendente.login, ppedidos[i].sede, ppedidos[i].cancelado, time_s );
+        //printf("%i. cpf: %s - prize: %.2f -motoqueiro:%s -atendente: %s - sede: %i -status:%i- time: %s %s %s \n", i+1,  ppedidos[i].cliente.CPF, ppedidos[i].prize, ppedidos[i].motoqueiro.nome, ppedidos[i].atendente.login, ppedidos[i].sede, ppedidos[i].cancelado, time_s ,time_s_m, time_s_d );
         for(j=0;j<itemsLen;j++){
             int idItem;
             fscanf(pdbs, "%i",&idItem);
@@ -685,8 +693,11 @@ void get_pedidos(pedidos *test ,int *n, int *lenItem[]){
       }
 
     *n=entryCount;
+    for(i=0;i<entryCount;i++){
+        dbpedidos[i]=ended[i];
+      }
     close_db(pdbs);
-    free(ppedidos);
+
 }
 
 void add_pedidos( pedidos *newPedido, int *itemsN){
@@ -749,7 +760,10 @@ void add_pedidos( pedidos *newPedido, int *itemsN){
         time.tm_mon-=1;
         fscanf(pdbs, "%i",&time.tm_year);
         time.tm_year-=1900;
-        ppedidos[i].time=p;
+        ppedidos[i].time=calloc(1, sizeof(struct tm));
+        ppedidos[i].time->tm_mday=time.tm_mday;
+        ppedidos[i].time->tm_mon=time.tm_mon;
+        ppedidos[i].time->tm_year=time.tm_year;
         strftime(time_s, sizeof(time_s),"%x",ppedidos[i].time);
 
         printf("%i. cpf: %s - prize: %.2f -motoqueiro:%s -atendente: %s - sede: %i -status:%i- time: %s \n", i+1,  ppedidos[i].cliente.CPF, ppedidos[i].prize, ppedidos[i].motoqueiro.nome, ppedidos[i].atendente.login, ppedidos[i].sede, ppedidos[i].cancelado, time_s );
@@ -765,11 +779,11 @@ void add_pedidos( pedidos *newPedido, int *itemsN){
         }
         printf("\n\n");
   }
-  printf("%i",*itemsN);
+  //printf("%i\n",*itemsN);
     itemsLenfinal[entryCount]= *itemsN;
-    printf("new pedido length %i\n",itemsLenfinal[entryCount] );
+    printf("new pedido length %i\n",itemsLenfinal[entryCount+1] );
     ppedidos[entryCount]=*newPedido;
-    printf("%i. cpf: %s - prize: %.2f -motoqueiro:%s -atendente: %s - sede: %i -status:%i- time:  \n", i+1,  ppedidos[3].cliente.CPF, ppedidos[3].prize, ppedidos[3].motoqueiro.nome, ppedidos[3].atendente.login, ppedidos[3].sede, ppedidos[3].cancelado);
+    printf("%i. cpf: %s - prize: %.2f -motoqueiro:%s -atendente: %s - sede: %i -status:%i- time:  \n", entryCount+1,  ppedidos[entryCount].cliente.CPF, ppedidos[entryCount].prize, ppedidos[entryCount].motoqueiro.nome, ppedidos[entryCount].atendente.login, ppedidos[entryCount].sede, ppedidos[entryCount].cancelado);
 
     fprintf(pdbs_temp,"%i\n", entryCount+1);
 

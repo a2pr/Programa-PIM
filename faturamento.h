@@ -22,16 +22,18 @@ void faturamento(){
     plen=&length;
 
     pedidos *dbPedidos, Pedidos[ get_entrycount(6)];
+    dbPedidos=&Pedidos;
 
     int *plenI,lenItem[get_entrycount(6)];
-    *plenI=&lenItem;
+    plenI=&lenItem;
     get_pedidos(dbPedidos, plen, plenI);
 
     int *plen_s,length_sabores;
-    *plen_s= &length_sabores;
+    plen_s= &length_sabores;
 
     items *dbItems, Items[ get_entrycount(1)];
 
+    dbItems=&Items;
     get_items_db(dbItems, plen_s, 3);
 
     int maiorT[length_sabores];
@@ -77,8 +79,8 @@ void faturamento(){
 
 
     //char time_s[50];
-    struct tm *now= get_time_faturamento();
 
+    struct tm *now= get_time_faturamento();
 
     //clear maiorT
     for(i=0;i<length_sabores;i++){
@@ -95,26 +97,25 @@ void faturamento(){
                                 //Check for the day
             if( tempo==2 && dbPedidos[i].cliente.id!=0 && dbPedidos[i].time->tm_mday==now->tm_mday && dbPedidos[i].time->tm_mon ==now->tm_mon && dbPedidos[i].time->tm_year == now->tm_year ){
 
-                length_items=sizeof(dbPedidos[i].items_pedido)/sizeof(dbPedidos[i].items_pedido[0]);
-
+                length_items=plenI[i];
+                printf("Pedido: %d\n",i+1 );
                 for(j=0; j<length_items; j++){
 
                         if( dbPedidos[i].items_pedido[j].id){
-                            printf("Pedido: %d\nItems:\n %s ------> %.2f\n",i+1, dbPedidos[i].items_pedido[j].nome, dbPedidos[i].items_pedido[0].prize );
+                            printf("Items:\n %s ------> %.2f\n", dbPedidos[i].items_pedido[j].nome, dbPedidos[i].items_pedido[0].prize );
                         }
                 }
                 total+=dbPedidos[i].prize;
                 printf("\n----------------\n");
             }
             //checks for mensal
-            if(tempo==1 && dbPedidos[i].cliente.id!=0 && dbPedidos[i].time->tm_mon ==now->tm_mon && dbPedidos[i].time->tm_year == now->tm_year){
-
-                length_items=sizeof(dbPedidos[i].items_pedido)/sizeof(dbPedidos[i].items_pedido[0]);
-
+            if(tempo==1 && dbPedidos[i].cliente.id && dbPedidos[i].time->tm_mon ==now->tm_mon && dbPedidos[i].time->tm_year == now->tm_year){
+                printf("Pedido: %d\n",i+1 );
+                length_items=plenI[i];
                 for(j=0; j<length_items; j++){
 
                         if( dbPedidos[i].items_pedido[j].id){
-                            printf("Pedido: %d\nItems:\n %s ------> %.2f\n",i+1, dbPedidos[i].items_pedido[j].nome, dbPedidos[i].items_pedido[0].prize );
+                            printf("Items:\n %s ------> %.2f\n", dbPedidos[i].items_pedido[j].nome, dbPedidos[i].items_pedido[0].prize );
                         }
                 }
                 total+=dbPedidos[i].prize;
@@ -127,13 +128,14 @@ void faturamento(){
                 //Check for the day
                 if( tempo==2 && dbPedidos[i].cliente.id!=0 && dbPedidos[i].time->tm_mday==now->tm_mday && dbPedidos[i].time->tm_mon ==now->tm_mon && dbPedidos[i].time->tm_year == now->tm_year ){
 
-                    length_items=sizeof(dbPedidos[i].items_pedido)/sizeof(dbPedidos[i].items_pedido[0]);
+                    length_items=plenI[i];
                     //check if pedido is from sede
                     if(dbPedidos[i].sede==sedeId ){
+                            printf("Pedido: %d\n",i+1 );
                             for(j=0; j<length_items; j++){
 
                                 if( dbPedidos[i].items_pedido[j].id){
-                                    printf("Pedido: %d\nItems:\n %s ------> %.2f\n",i+1, dbPedidos[i].items_pedido[j].nome, dbPedidos[i].items_pedido[0].prize );
+                                    printf("Items:\n %s ------> %.2f\n", dbPedidos[i].items_pedido[j].nome, dbPedidos[i].items_pedido[0].prize );
                                 }
                         }
                         total+=dbPedidos[i].prize;
@@ -143,12 +145,13 @@ void faturamento(){
                 }
                 //checks for mensal
                 if(tempo==1 && dbPedidos[i].cliente.id!=0 && dbPedidos[i].time->tm_mon ==now->tm_mon && dbPedidos[i].time->tm_year == now->tm_year){
-                    length_items=sizeof(dbPedidos[i].items_pedido)/sizeof(dbPedidos[i].items_pedido[0]);
+                    length_items=plenI[i];
                     if(dbPedidos[i].sede==sedeId ){
+                            printf("Pedido: %d\n",i+1 );
                              for(j=0; j<length_items; j++){
 
                                 if( dbPedidos[i].items_pedido[j].id){
-                                    printf("Pedido: %d\nItems:\n %s ------> %.2f\n",i+1, dbPedidos[i].items_pedido[j].nome, dbPedidos[i].items_pedido[0].prize );
+                                    printf("Items:\n %s ------> %.2f\n", dbPedidos[i].items_pedido[j].nome, dbPedidos[i].items_pedido[0].prize );
                                 }
                         }
                         total+=dbPedidos[i].prize;
@@ -175,7 +178,7 @@ void faturamento(){
                 //Pela sede
                 if(optSabor==1){
                     // quantidade de items do pedido
-                    length_items=sizeof(dbPedidos[i].items_pedido)/sizeof(dbPedidos[i].items_pedido[0]);
+                    length_items=plenI[i];
 
                     //assign counter for sabores
                     int counter[length_sabores] ;
@@ -217,7 +220,7 @@ void faturamento(){
                 //pelo total
                 else{
                      // quantidade de items do pedido
-                    length_items=sizeof(dbPedidos[i].items_pedido)/sizeof(dbPedidos[i].items_pedido[0]);
+                    length_items=plenI[i];
                     //assign counter for sabores
                     int counter[length_sabores] ;
                     for(j=0;j<length_sabores;j++){
@@ -288,9 +291,9 @@ void vendas(){
         plen=&length;
 
         pedidos *dbPedidos, Pedidos[ get_entrycount(6)];
-
+        dbPedidos=&Pedidos;
         int *plenI,lenItem[get_entrycount(6)];
-        *plenI=&lenItem;
+        plenI=&lenItem;
         get_pedidos(dbPedidos, plen,plenI);
 
         int i, j, length_item, maiorInd;

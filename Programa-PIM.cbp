@@ -28,26 +28,29 @@
 				</Linker>
 			</Target>
 		</Build>
+		<VirtualTargets>
+			<Add alias="all" targets="Release;" />
+		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
 		<Unit filename="database_implementation.h">
-			<Option target="&lt;{~None~}&gt;" />
+			<Option target="Release" />
 		</Unit>
 		<Unit filename="faturamento.h">
-			<Option target="&lt;{~None~}&gt;" />
+			<Option target="Release" />
 		</Unit>
 		<Unit filename="functions.h">
-			<Option target="&lt;{~None~}&gt;" />
+			<Option target="Release" />
 		</Unit>
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="memory.h">
-			<Option target="&lt;{~None~}&gt;" />
+			<Option target="Release" />
 		</Unit>
 		<Unit filename="types.h">
-			<Option target="&lt;{~None~}&gt;" />
+			<Option target="Release" />
 		</Unit>
 		<Extensions>
 			<code_completion />
