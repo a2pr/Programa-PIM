@@ -11,6 +11,7 @@
 #include "functions.h"
 #include "database_implementation.h"
 #include "memory.h"
+#include "perdas.h"
 #define cu_sede 0
 
 int main ()

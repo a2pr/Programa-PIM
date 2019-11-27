@@ -1,9 +1,22 @@
 #ifndef FATURAMENTO_H_INCLUDED
 #define FATURAMENTO_H_INCLUDED
 #include "types.h"
-#include "functions.h"
 #include "database_implementation.h"
 
+double get_multiplier_fat(int i){
+     switch(i){
+        case 1:
+           return 1;
+        break;
+        case 2:
+            return 1.15;
+        break;
+        case 3:
+            return 1.3;
+        break;
+    }
+    return 0;
+}
 struct tm * get_time_faturamento(){
 
     time_t now;
@@ -21,7 +34,7 @@ void faturamento(){
     int *plen, length, i, opt,sedeId, tempo, length_items, optSabor, maiorInd=0, maior=NULL ;
     plen=&length;
 
-    pedidos *dbPedidos, Pedidos[ get_entrycount(6)];
+    pedidos *dbPedidos, Pedidos[get_entrycount(6)];
     dbPedidos=&Pedidos;
 
     int *plenI,lenItem[get_entrycount(6)];
@@ -101,9 +114,9 @@ void faturamento(){
                 printf("Pedido: %d\n",i+1 );
                 for(j=0; j<length_items; j++){
 
-                        if( dbPedidos[i].items_pedido[j].id){
-                            printf("Items:\n %s ------> %.2f\n", dbPedidos[i].items_pedido[j].nome, dbPedidos[i].items_pedido[0].prize );
-                        }
+                       if( dbPedidos[i].items_pedido[j].id){
+                                    printf("Items:\n %s ------> %.2f--->tamanho: %i---->total: %.2f\n", dbPedidos[i].items_pedido[j].nome, dbPedidos[i].items_pedido[j].prize,  dbPedidos[i].items_pedido[j].tamanho,  dbPedidos[i].items_pedido[j].prize * get_multiplier_fat( dbPedidos[i].items_pedido[j].tamanho) );
+                                }
                 }
                 total+=dbPedidos[i].prize;
                 printf("\n----------------\n");
@@ -114,9 +127,9 @@ void faturamento(){
                 length_items=plenI[i];
                 for(j=0; j<length_items; j++){
 
-                        if( dbPedidos[i].items_pedido[j].id){
-                            printf("Items:\n %s ------> %.2f\n", dbPedidos[i].items_pedido[j].nome, dbPedidos[i].items_pedido[0].prize );
-                        }
+                       if( dbPedidos[i].items_pedido[j].id){
+                                    printf("Items:\n %s ------> %.2f--->tamanho: %i---->total: %.2f\n", dbPedidos[i].items_pedido[j].nome, dbPedidos[i].items_pedido[j].prize,  dbPedidos[i].items_pedido[j].tamanho,  dbPedidos[i].items_pedido[j].prize * get_multiplier_fat( dbPedidos[i].items_pedido[j].tamanho) );
+                                }
                 }
                 total+=dbPedidos[i].prize;
                 printf("\n----------------\n");
@@ -134,8 +147,8 @@ void faturamento(){
                             printf("Pedido: %d\n",i+1 );
                             for(j=0; j<length_items; j++){
 
-                                if( dbPedidos[i].items_pedido[j].id){
-                                    printf("Items:\n %s ------> %.2f\n", dbPedidos[i].items_pedido[j].nome, dbPedidos[i].items_pedido[0].prize );
+                               if( dbPedidos[i].items_pedido[j].id){
+                                    printf("Items:\n %s ------> %.2f--->tamanho: %i---->total: %.2f\n", dbPedidos[i].items_pedido[j].nome, dbPedidos[i].items_pedido[j].prize,  dbPedidos[i].items_pedido[j].tamanho,  dbPedidos[i].items_pedido[j].prize * get_multiplier_fat( dbPedidos[i].items_pedido[j].tamanho) );
                                 }
                         }
                         total+=dbPedidos[i].prize;
@@ -151,7 +164,7 @@ void faturamento(){
                              for(j=0; j<length_items; j++){
 
                                 if( dbPedidos[i].items_pedido[j].id){
-                                    printf("Items:\n %s ------> %.2f\n", dbPedidos[i].items_pedido[j].nome, dbPedidos[i].items_pedido[0].prize );
+                                    printf("Items:\n %s ------> %.2f--->tamanho: %i---->total: %.2f\n", dbPedidos[i].items_pedido[j].nome, dbPedidos[i].items_pedido[j].prize,  dbPedidos[i].items_pedido[j].tamanho,  dbPedidos[i].items_pedido[j].prize * get_multiplier_fat( dbPedidos[i].items_pedido[j].tamanho) );
                                 }
                         }
                         total+=dbPedidos[i].prize;
@@ -231,7 +244,7 @@ void faturamento(){
                      for(j=0; j<length_items; j++){
                          //pelo mes
                             if(tempo==1){
-                                   if(dbPedidos[i].items_pedido[j].id && dbPedidos[i].sede==sedeId && dbPedidos[i].time->tm_mon ==now->tm_mon && dbPedidos[i].time->tm_year == now->tm_year ){
+                                   if(dbPedidos[i].items_pedido[j].id && dbPedidos[i].time->tm_mon ==now->tm_mon && dbPedidos[i].time->tm_year == now->tm_year ){
                                         for(k=0; k<length_sabores; k++){
                                            if(dbPedidos[i].items_pedido[j].id== dbItems[k].id){
                                                     counter[k]++;
@@ -241,7 +254,7 @@ void faturamento(){
                             }
                             //pelo dia
                             else{
-                                 if(dbPedidos[i].items_pedido[j].id && dbPedidos[i].sede==sedeId && dbPedidos[i].time->tm_mday==now->tm_mday && dbPedidos[i].time->tm_mon ==now->tm_mon && dbPedidos[i].time->tm_year == now->tm_year ){
+                                 if(dbPedidos[i].items_pedido[j].id  && dbPedidos[i].time->tm_mday==now->tm_mday && dbPedidos[i].time->tm_mon ==now->tm_mon && dbPedidos[i].time->tm_year == now->tm_year ){
                                         for(k=0; k<length_sabores; k++){
                                            if(dbPedidos[i].items_pedido[j].id== dbItems[k].id){
                                                     counter[k]++;
@@ -270,7 +283,7 @@ void faturamento(){
                     maiorInd=j;
                 }
             }
-        printf("Sabor mais pedido: %s ------- quantidade vendida: %d", dbItems[maiorInd].nome, maior );
+        printf("Sabor mais pedido mensalmente: %s ------- quantidade vendida: %d", dbItems[maiorInd].nome, maior );
     }
 
     if(opt<3){
@@ -317,7 +330,7 @@ void vendas(){
 
         switch(maiorInd){
         case 0:
-            printf("Iranduba com ingresos de %.2f R$\n", maior);
+            printf("Manaus com ingresos de %.2f R$\n", maior);
             length_item=sizeof(dbPedidos[maiorInd].items_pedido)/sizeof(dbPedidos[maiorInd].items_pedido[0]);
             for(i=0;i<length_item;i++){
                 if(dbPedidos[i].sede==maiorInd){
@@ -349,7 +362,7 @@ void vendas(){
             }
             break;
         case 2:
-           printf("Iranduba com ingresos de %.2f R$\n", maior);
+           printf("Secundario com ingresos de %.2f R$\n", maior);
             length_item=sizeof(dbPedidos[maiorInd].items_pedido)/sizeof(dbPedidos[maiorInd].items_pedido[0]);
             for(i=0;i<length_item;i++){
                 if(dbPedidos[i].sede==maiorInd){

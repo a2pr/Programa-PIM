@@ -16,7 +16,7 @@ void create_cu_user(users *pusers, char login[10], char pass[10]){
     printf("%s,%s\n",values->login,values->password );
 
     *pusers=*values;
-
+    free(values);
 }
 
 void create_item(items *newItem, int qtd, items db[],int opt ){

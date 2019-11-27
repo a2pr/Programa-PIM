@@ -198,16 +198,16 @@ void choose_bebida(pedidos *ppedido, int *qtd_T ){
 }
 
 
-bool check_en_estoque(pedidos *ppedido){
+bool check_en_estoque(pedidos *ppedido, int *itemsL){
     int *plen,i,j,length_e, length_p;
     plen=&length_e;
 
     items *dbEstoques, Estoques[get_entrycount(1)];
     dbEstoques=&Estoques;
     //getting pizzas from db
-    get_items_db(dbEstoques,plen,1);
+    get_items_db(dbEstoques,plen,3);
 
-    length_p=sizeof(ppedido->items_pedido)/sizeof(ppedido->items_pedido[0]);
+    length_p=*itemsL;
 
     for(i=0; i<length_p;i++){
         for(j=0; j<length_e;j++){
@@ -219,6 +219,7 @@ bool check_en_estoque(pedidos *ppedido){
             }
         }
     }
+    update_items_db(dbEstoques, plen);
     return true;
 
 }
@@ -336,7 +337,7 @@ void cadastrar_pedido(users *atendente, clientes *pcliente,  pedidos *ppedido){
         printf("Conta ate agora: %.2f \n",ppedido->prize);
         // check in estoque if values are available
 
-        if(!check_en_estoque(ppedido)){
+        if(!check_en_estoque(ppedido, lenqtd)){
 
                     memset(ppedido->items_pedido,0,10*sizeof(items));
 
@@ -391,11 +392,11 @@ void check_for_pedido(clientes *pcliente, char cpf[]){
     plenI=&lenItem;
     //getting info from db
     get_pedidos(dbPedidos, plen, plenI);
-
+    printf("\n Para esse cpf temos os siguientes pedidos feitos\n");
     for(i=0; i<length_p;i++){
         if(strcmp(cpf,dbPedidos[i].cliente.CPF)==0){
                 length_i=plenI[i];
-                printf("\n Para esse cpf temos os siguientes pedidos feitos\n");
+
                 printf("\n Pedido %d: \n",i+1);
                 for(k=0;k<length_i;k++){
                     if(dbPedidos[i].items_pedido[k].id){
@@ -470,7 +471,7 @@ void cadastrar_pedido_promotion(users *atendente, clientes *pcliente,  pedidos *
         printf("Conta ate agora: %.2f \n",ppedido->prize);
         // check in estoque if values are available
 
-        if(!check_en_estoque(ppedido)){
+        if(!check_en_estoque(ppedido, qtd)){
 
                     memset(ppedido->items_pedido,0,10*sizeof(items));
 
