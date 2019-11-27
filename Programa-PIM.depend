@@ -13,9 +13,10 @@
 	"memory.h"
 	"perdas.h"
 
-1574835972 d:\documents\uni\2 periodo\pim\programa-pim\functions.h
+1574858705 d:\documents\uni\2 periodo\pim\programa-pim\functions.h
 	"types.h"
 	"faturamento.h"
+	"functions.h"
 	"database_implementation.h"
 
 1574638299 d:\documents\uni\2 periodo\pim\programa-pim\types.h
@@ -24,11 +25,11 @@
 1573449076 d:\documents\uni\2 periodo\pim\programa-pim\test-variables.h
 	"types.h"
 
-1574835295 d:\documents\uni\2 periodo\pim\programa-pim\faturamento.h
+1574883940 d:\documents\uni\2 periodo\pim\programa-pim\faturamento.h
 	"types.h"
 	"database_implementation.h"
 
-1574836007 d:\documents\uni\2 periodo\pim\programa-pim\database_implementation.h
+1574884178 d:\documents\uni\2 periodo\pim\programa-pim\database_implementation.h
 	"functions.h"
 	<unistd.h>
 	"types.h"

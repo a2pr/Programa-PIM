@@ -37,7 +37,7 @@ void faturamento(){
     pedidos *dbPedidos, Pedidos[get_entrycount(6)];
     dbPedidos=&Pedidos;
 
-    int *plenI,lenItem[get_entrycount(6)];
+    int *plenI,lenItem[get_entrycount(1)];
     plenI=&lenItem;
     get_pedidos(dbPedidos, plen, plenI);
 

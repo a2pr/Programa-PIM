@@ -408,6 +408,8 @@ void check_for_pedido(clientes *pcliente, char cpf[]){
 
         }
     }
+    free(plenI);
+    free(dbPedidos);
     printf("\nPress ENTER key to go back to the menu\n");
     getch();
     system("@cls||clear");

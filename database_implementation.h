@@ -54,6 +54,7 @@ int get_entrycount(int opt){
 
       fscanf(pdbs, "%i", &entryCount);
       fclose(pdbs);
+      free(pdbs);
       return entryCount;
 }
 
@@ -613,6 +614,8 @@ items get_items_by_id(int id ){
 
 void get_pedidos(pedidos *test ,int *n, int *lenItem[]){
     int i,j,entryCount;
+    struct tm *p, time;
+    p=&time;
     char db_name[25]="./db/dbPedidos.txt";
     FILE *pdbs;
 
@@ -634,8 +637,6 @@ void get_pedidos(pedidos *test ,int *n, int *lenItem[]){
     //printf("size of produtos struct:%i\nsize of pprodutos: %i\n\n",sizeof(pedidos),sizeof(*ppedidos));
     for(i=0; i<entryCount;i++){
         int cpfLen, itemsLen,idMoto, idAten;
-        struct tm *p, time;
-        p=&time;
         char time_s[50];
         //gets cliente
         fscanf(pdbs, "%i",&cpfLen);
