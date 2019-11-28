@@ -12,7 +12,6 @@
 #include "database_implementation.h"
 #include "memory.h"
 #include "perdas.h"
-#define cu_sede 0
 
 int main ()
 {
@@ -30,11 +29,13 @@ int main ()
     int i=1, step=0, optG=0;
 	int *plogout, logout=0;
 	plogout = &logout;
-
-	check_for_databases();
+    int *psede, cu_sede;
+    psede=&cu_sede;
+	check_for_databases(psede);
 
     while (i != 0)
        {
+        system("@cls||clear");
          printf("Login: \n");
         scanf("%s",temp_login);
         printf("Password: \n");

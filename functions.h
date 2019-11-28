@@ -199,7 +199,7 @@ void choose_bebida(pedidos *ppedido, int *qtd_T ){
 
 
 bool check_en_estoque(pedidos *ppedido, int *itemsL){
-    int *plen,i,j,length_e, length_p;
+    int *plen,i,j,length_e, length_p, counterProd,k,l;
     plen=&length_e;
 
     items *dbEstoques, Estoques[get_entrycount(1)];
@@ -220,6 +220,12 @@ bool check_en_estoque(pedidos *ppedido, int *itemsL){
         }
     }
     update_items_db(dbEstoques, plen);
+    items *retire, retireItems[*itemsL];
+    retire= &retireItems;
+    for(i=0; i<length_p;i++){
+        retire[i]=ppedido->items_pedido[i];
+    }
+    update_produtos_db(retire, itemsL);
     return true;
 
 }

@@ -11,28 +11,64 @@ void close_db(FILE *db){
 
 }
 
-void check_for_databases(){
-    int i;
+void check_for_databases(int *sede){
+    int entryCount, i, id;
+    char enderezo[25];
+    bool user_new;
     char db_names[8][25]={
     "./db/dbUsers.txt", "./db/dbItems.txt","./db/dbSede.txt","./db/dbMotoqueiros.txt",
     "./db/dbProdutos.txt","./db/dbClientes.txt","./db/dbPedidos.txt","./db/dbFeedback.txt"
     };
 
-     FILE *pdbs[8];
-
-     for(i=0;i<8;i++){
+    FILE *pdbs[8];
+    FILE *pdbs_sede;
+    for(i=0;i<8;i++){
       if(access(db_names[i],F_OK)==0){
             //db is found
         //printf("File %s exits\n", db_names[i]);
 
-      }else{
-          // db is create
-            pdbs[i]= fopen(db_names[i],"w");
-            fclose(pdbs[i]);
-            //printf(" %s created!\n", db_names[i]);
-
       }
-    };
+      else{
+          // db is create
+        if(i==0){user_new=1;}
+        printf("First login\nCreating databases.....\n");
+        pdbs[i]= fopen(db_names[i],"w");
+        fprintf(pdbs[i],"0\n");
+        fclose(pdbs[i]);
+      }
+    }
+    if(user_new){
+        pdbs[0]=fopen(db_names[0],"w");
+        fprintf(pdbs[0],"2\n");
+        fprintf(pdbs[0],"1 9 atendente 6 123456 1\n");
+        fprintf(pdbs[0],"2 5 admin 6 123456 0\n");
+        printf("\nUsuario e senha: atendente 123456\n");
+        user_new=0;
+        fclose(pdbs[0]);
+    }
+    pdbs_sede=fopen("./db/dbSede.txt","r");
+    fscanf(pdbs_sede, "%i", &entryCount);
+    fclose(pdbs_sede);
+    if(entryCount!=0){
+            pdbs_sede=fopen("./db/dbSede.txt","r");
+            fscanf(pdbs_sede, "%i", &entryCount);
+            fscanf(pdbs_sede, "%i", sede);
+            fclose(pdbs_sede);
+    }else{
+            printf("Set your sede\n");
+            printf("Which code is your sede:\n 0-> Sede principal\n 1-> sede de iranduba\n 2-> sede secundaria\n");
+            scanf("%i", &id);
+            printf("Enderezo da sede:\n");
+            scanf("%s", enderezo);
+            pdbs_sede=fopen("./db/dbSede.txt","w");
+            fprintf(pdbs_sede,"1\n");
+            fprintf(pdbs_sede,"%i %i %s\n", id, strlen(enderezo), enderezo);
+            fclose(pdbs_sede);
+            sede=id;
+            printf("Done\nENTER key");
+            getchar();
+    }
+
 }
 
 int get_entrycount(int opt){
@@ -569,7 +605,7 @@ produtos get_produtos_by_id(int id ){
         }
     }
     fail.id=0;
-    printf(" Produto not found with that id!\n");
+    //printf(" Produto not found with that id!\n");
     return fail;
 
 }
@@ -851,7 +887,7 @@ void update_items_db(items *test ,int *n){
         j=0;
         counterProd=0;
         k=0;
-        fprintf(pdbs_temp,"%i %i %s %.2f",test[i].id, strlen(test[i].nome),test[i].nome, test[i].prize );
+        fprintf(pdbs_temp,"%i %i%s %.2f",test[i].id, strlen(test[i].nome)-1,test[i].nome, test[i].prize );
         //check number of produtos
         while(j==0){
             produtos prod, fail;
@@ -871,9 +907,73 @@ void update_items_db(items *test ,int *n){
         }
         fprintf(pdbs_temp," %i %i\n", test[i].promotion, test[i].type);
         for(j=0;j<counterProd;j++){
-            fprintf(pdbs_temp," %i %i %s %.2f\n", test[i].produto[j].id, strlen(test[i].produto[j].nome), test[i].produto[j].nome, test[i].produto[j].prize);
+            fprintf(pdbs_temp," %i %i%s%.2f\n", test[i].produto[j].id, strlen(test[i].produto[j].nome)-2, test[i].produto[j].nome, test[i].produto[j].prize);
         }
 
+    }
+
+
+    close_db(pdbs);
+    close_db(pdbs_temp);
+    remove(db_name[0]);
+    rename(db_name[1], db_name[0]);
+    printf("Updated item estoque!");
+}
+
+void update_produtos_db(items *test ,int *n){
+    int *plen,i,j,k,l, counterProd , entryCount,  length;
+    char db_name[2][25]={"./db/dbProdutos.txt", "./db/dbProdutos_temp.txt"};
+    FILE *pdbs;
+    FILE *pdbs_temp;
+
+    if(access(db_name[0],F_OK)==0){
+        pdbs=fopen(db_name[0],"r");
+        pdbs_temp=fopen(db_name[1],"w");
+        printf("\n%s was open! \n", db_name[0]);
+        printf("\n%s was created! \n", db_name[1]);
+    }
+    fscanf(pdbs, "%i", &entryCount);
+    produtos *pprodutos=NULL, dbprodutos[entryCount];
+    pprodutos=&dbprodutos;
+    plen=&length;
+    get_produtos_db(pprodutos,plen);
+    fprintf(pdbs_temp,"%i\n", entryCount);
+    for(i=0;i<*n;i++){
+        counterProd=0;
+        k=0;
+        l=0;
+        while(l==0){
+            produtos prod, fail;
+            prod=get_produtos_by_id(test[i].produto[k].id);
+            if(prod.id==0){
+                l++;
+            }else{
+            counterProd++;
+            }
+         k++;
+        }
+        for(j=0;j<counterProd;j++){
+            for(k=0;j<entryCount;k++){
+                if(pprodutos[k].id==test[i].produto[j].id && pprodutos[k].sede==test[i].produto[j].sede ){
+                pprodutos[k].quantidade--;
+                break;
+                }
+            }
+
+        }
+
+        /*for(j=0;j<counterProd;j++){
+            printf("%i. %i-%s- prize: %f -qtd:%i -sede: %i\n", i+1,  test[i].produto[j].id, test[i].produto[j].nome, test[i].produto[j].prize, test[i].produto[j].quantidade, test[i].produto[j].sede );
+        }*/
+
+    }
+    /*for(i=0;i<entryCount;i++){
+        printf("%i. %i-%s- prize: %f -qtd:%i -sede: %i\n", i+1,  pprodutos[i].id, pprodutos[i].nome, pprodutos[i].prize, pprodutos[i].quantidade, pprodutos[i].sede );
+    }*/
+
+    for ( i = 0; i < entryCount; i++)
+    {
+        fprintf(pdbs_temp,"%i %i%s%.2f %i %i\n",  pprodutos[i].id,strlen( pprodutos[i].nome)-2,  pprodutos[i].nome, pprodutos[i].prize, pprodutos[i].quantidade, pprodutos[i].sede );
     }
 
 
