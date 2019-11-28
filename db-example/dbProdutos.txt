@@ -1,0 +1,4 @@
+1// numero de entradas do arquivo
+1 16 queijo mussarela 10.00 28 0
+
+id do produto; numero de caracteres do nome do produto; nome do produto; preço; quantidade em estoque; id da sede

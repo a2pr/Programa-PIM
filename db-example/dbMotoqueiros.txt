@@ -1,0 +1,4 @@
+1// numero de entradas do arquivo
+1 5 Julio 6 789456 1 1
+
+id do motoqueiro; numero de caracteres do nome do motoqueiro. numero de caracteres do telefone; telefone;id da sede assinado; estado de disponivilidade 1:disponivel, 0: indisponivel;

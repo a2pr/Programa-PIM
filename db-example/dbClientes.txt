@@ -1,0 +1,3 @@
+0 // numero de entradas do arquivo
+1 6 789456 6 andres 40      Av Djalma Batista Amazonas shopping
+id do cliente; número de caracteres do cpf; Cpf; número de caracteres do nome; nome; número de caracteres do endereço; endereço

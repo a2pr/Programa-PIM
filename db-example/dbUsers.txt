@@ -1,0 +1,7 @@
+2
+1 9 atendente 6 123456 1
+2 5 admin 6 123456 0
+
+//populada automaticamente. mas configuravel
+
+id do usuario,numero de caracteres do login; login; numero de caracteres da senha; senha; permissoes do usuario 1:atendete, 0:administrador.

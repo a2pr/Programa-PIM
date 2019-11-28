@@ -1,0 +1,12 @@
+1// numero de entradas do arquivo
+1 15 Pizza Calabresa 25.00 6 15 3 1 2 3 0 1
+ 1 16 queijo mussarela 25.00
+ 2 8 levedura 25.00
+ 3 4 oleo 8.00
+ 4 15 molho de tomate 15.00
+ 6 3 sal 3.00
+ 7 9 calabresa 18.00
+
+segunda linha item: id do item; numero de caracteres do nome do item; preço; quantidade de produtos usados para ese item; quantidade em estoque; quantidade de tamanhos disponivels; tamanhos 1:pequeno, 2:mediana, 3: grande;estado de promoção 0:sem promoção, 1: em promoção;
+dependedo da quantidade de produtos usados para ese item as proximas linhas vai ser de produtos.
+linha de produtos: id do produto; numero de caracteres do nome do produto; nome do produto; preco
