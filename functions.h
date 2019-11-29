@@ -70,12 +70,12 @@ bool check_user(users *current_user, int *logout){
 
 bool check_cliente(char cpf[], clientes *pcliente){
     int *plen, i, length;
-    plen=&length;
+    length=get_entrycount(5);
 
     clientes *dbClientes,Clientes[get_entrycount(5)] ;
     dbClientes=&Clientes;
     //getting clientes from database
-    get_clientes_db(dbClientes,plen);
+    get_clientes_db(dbClientes);
 
     for(i=0;i<length-1;i++ ){
             if(strcmp(cpf,dbClientes[i].CPF)==0){
@@ -107,7 +107,7 @@ void choose_pizza(pedidos *ppedido, int *qtd_T){
     int *plen, i, opt, Qtd, tamanho, lenght;
     plen=&lenght;
 
-    items *dbPizzas, Pizzas[get_entrycount(1)];
+    items *dbPizzas, Pizzas[get_entrycount(1)], after;
     dbPizzas=&Pizzas;
     //getting pizzas from db
     get_items_db(dbPizzas,plen,1);
@@ -148,13 +148,14 @@ void choose_pizza(pedidos *ppedido, int *qtd_T){
     }
     printf("%i %s,  %i , %f, %i", ppedido->items_pedido[0].id,  ppedido->items_pedido[0].nome,ppedido->items_pedido[0].quantidade, ppedido->prize, *qtd_T);
     printf("\n%d pizzas adicionadas\n", Qtd);
+    dbPizzas=&after;
 }
 
 void choose_bebida(pedidos *ppedido, int *qtd_T ){
     int *plen, i,j,used, opt, Qtd, tamanho,  lenght,lenght_total;
     plen=&lenght;
 
-    items *dbBebidas, Bebidas[get_entrycount(6)];
+    items *dbBebidas, Bebidas[get_entrycount(6)], after;
     dbBebidas=&Bebidas;
     get_items_db(dbBebidas,plen,2);
 
@@ -169,7 +170,7 @@ void choose_bebida(pedidos *ppedido, int *qtd_T ){
     }
     printf("Escolha sua bebida: ");
     scanf("%d", &opt);
-    printf("\nTamanho da pizza?");
+    printf("\nTamanho da bebida?");
     printf("\n1- Pequena\n");
     printf("\n3- Grande\n\n");
     scanf("%d", &tamanho);
@@ -195,6 +196,7 @@ void choose_bebida(pedidos *ppedido, int *qtd_T ){
         *qtd_T+=Qtd;
     }
     printf("\n%d Bebidas adicionadas\n", Qtd);
+    dbBebidas=&after;
 }
 
 
@@ -232,17 +234,12 @@ bool check_en_estoque(pedidos *ppedido, int *itemsL){
 
 void cadastrar_cliente(clientes *pcliente, char cpf[]){
     int *plen, length;
-    char temp_nome[15], temp_end[50], temp_tel[15];
+    char temp_nome[15], temp_end[35], temp_tel[15];
      plen=&length;
-
-     clientes *dbClientes,Clientes[20] ;
-    dbClientes=&Clientes;
-    //getting clientes from database
-    get_clientes_db(dbClientes,plen);
 
     pcliente->CPF=malloc(sizeof(char)*(strlen(cpf)+1));
     strcpy(pcliente->CPF, cpf);
-    printf("\n Cliente n�o cadastrado!\nPress ENTER key para cadastrar\n");
+    printf("\n Cliente sem cadastrado!\nPress ENTER key para cadastrar\n");
     getch();
     system("@cls||clear");
 
@@ -251,16 +248,19 @@ void cadastrar_cliente(clientes *pcliente, char cpf[]){
     pcliente->nome=malloc(sizeof(char)*(strlen(temp_nome)+1));
     strcpy(pcliente->nome, temp_nome);
 
-    printf("\nEndere�� do cliente: \n");
-    scanf("%s",  temp_end);
-    pcliente->enderezo=malloc(sizeof(char)*(strlen(temp_end)+1));
-    strcpy(pcliente->enderezo, temp_end);
 
-    printf("\nTelefone do cliente: \n");
+
+
+    printf("\nTelefone do cliente:\n");
     scanf("%s", temp_tel);
+    printf("\nCPE do Endereço do cliente: \n");
+    scanf("%s", temp_end);
+
+
     pcliente->telefone=malloc(sizeof(char)*(strlen(temp_tel)+1));
     strcpy(pcliente->telefone, temp_tel);
-
+    pcliente->enderezo=malloc(sizeof(char)*(strlen(temp_end)+1));
+    strcpy(pcliente->enderezo, temp_end);
     //adding to database
     add_clientes_db(pcliente);
 
@@ -310,7 +310,7 @@ void set_time( pedidos *ppedido){
             printf("Demorara %d horas para chegar seu pedido\n",hours);
         }
     }else{
-        printf("Demorara %.0f minutos para chegar seu pedido\n", time);
+        printf("Demorara 45 minutos para chegar seu pedido\n");
     }
 
 
@@ -355,7 +355,7 @@ void cadastrar_pedido(users *atendente, clientes *pcliente,  pedidos *ppedido){
     }
 
     //adding cliente to pedido
-    char cpf[Max];
+    char cpf[10];
     printf("\nO Cliente esta cadastrado?\n inserir CPF: ");
     scanf("%s", cpf);
     if( check_cliente(cpf, pcliente) ){
@@ -420,45 +420,6 @@ void check_for_pedido(clientes *pcliente, char cpf[]){
     getch();
     system("@cls||clear");
 }
-
-/* void get_menu(items (*menu)[Max]){
-    //for testing purpose
-    produtos test_produto[2]={{1,"item A", 5, 10}};
-
-    items test_items[]={
-        {
-            .id=1,
-            "pizza A",
-            .prize= 22.5,
-            .produto= test_produto[0],
-            .quantidade=10
-        },
-        {
-            .id= 2,
-            "pizza B",
-            .prize= 22.8,
-            .produto= test_produto[0],
-            .quantidade= 5
-        }
-    };
-    int i, lenght;
-    lenght= sizeof(test_items)/sizeof(test_items[0]);
-    for(i=0;i<=lenght-1;i++){
-        //assign items to menu
-        menu[i]->id= test_items[i].id;
-        strcpy(menu[i]->nome,test_items[i].nome);
-        (*menu[i]).prize= test_items[i].prize;
-        (*menu[i]).produto->id = test_produto[0].id;
-        strcpy((*menu[i]).produto->nome, test_produto[0].nome);
-        (*menu[i]).produto->prize= test_produto[0].prize;
-        (*menu[i]).produto->quantidade = test_produto[0].quantidade;
-        (*menu[i]).quantidade= test_items[i].quantidade;
-        //testing values assings
-        //printf("Items del menu:\n id: %d \nitem name:%s\nprize: %.2f \n Quantidade: %d\n ",menu[i]->id, menu[i]->nome, (*menu[i]).prize, (*menu[i]).quantidade  );
-        //printf("produtos usados:\n id: %d \n item name:%s\nprize: %.2f \n Quantidade: %d\n",(*menu[i]).produto->id, (*menu[i]).produto->nome,(*menu[i]).produto->prize,  (*menu[i]).produto->quantidade  );
-    }
-    printf("values assign !");
-}*/
 
 void cadastrar_pedido_promotion(users *atendente, clientes *pcliente,  pedidos *ppedido, int *qtd){
     bool pedido_ok=false;
@@ -533,7 +494,7 @@ void show_promotion( users *atendente, clientes *pcliente,  pedidos *ppedido){
     dbPromotions=&Promotions;
     get_items_db(dbPromotions,plen,3);
 
-    printf("\n----------Nossas Promo��es disponivels-----\n");
+    printf("\n----------Nossas promocoes disponivels-----\n");
 
     for(i=0; i<length; i++){
         if(dbPromotions[i].quantidade!=0 && dbPromotions[i].promotion==true ){
@@ -541,9 +502,9 @@ void show_promotion( users *atendente, clientes *pcliente,  pedidos *ppedido){
         }
     }
 
-    printf("Escolha sua promo��o: ");
+    printf("Escolha sua promocao: ");
     scanf("%d", &opt);
-     printf("\nTamanho da pizza?");
+     printf("\nTamanho da promocao?");
     printf("\n1- Pequena\n");
     printf("\n2- Mediana\n");
     printf("\n3- Grande\n\n");
@@ -571,13 +532,13 @@ void show_promotion( users *atendente, clientes *pcliente,  pedidos *ppedido){
  void get_clientes(){
      system("@cls||clear");
      int *plen, i, length;
-     plen=&length;
+     length=get_entrycount(5);
 
      clientes *dbClientes,Clientes[20] ;
      dbClientes=&Clientes;
 
      //get clientes from database
-     get_clientes_db(dbClientes,plen);
+     get_clientes_db(dbClientes);
 
      /*testing data obtain
      for(i=0; i<length; i++){
@@ -605,13 +566,7 @@ void show_promotion( users *atendente, clientes *pcliente,  pedidos *ppedido){
     clientes *dbClientes,Clientes[20] ;
     dbClientes=&Clientes;
 
-     //get clientes from database not really necesary
-      /*testing data obtain
-    get_clientes_db(dbClientes,plen);
-    for(i=0; i<length_clientes; i++){
-        printf("%i. %i- %s - %s -", i+1,dbClientes[i].id, dbClientes[i].CPF,dbClientes[i].nome );
-        printf(" %s - %s\n", dbClientes[i].enderezo, dbClientes[i].telefone);
-     }*/
+
 
     feedback test_fb[]={
         {
@@ -629,7 +584,7 @@ void show_promotion( users *atendente, clientes *pcliente,  pedidos *ppedido){
 
     };
 
-    printf("\n1- Cadastra uma Reclama��es ou sugest�o\n");
+    printf("\n1- Cadastra uma Resenha\n");
     printf("\n2- Feedback disponivel\n");
     scanf("%d", &opt);
     switch(opt){
@@ -648,7 +603,7 @@ void show_promotion( users *atendente, clientes *pcliente,  pedidos *ppedido){
             printf("Inserir o feedback: \n");
             scanf("%s",  pfb->description);
 
-            printf("Tipo de feedback. \n1= reclama��o\n0=suggestao: \n");
+            printf("Tipo de feedback. \n1= negativo \n0=suggestao: \n");
             scanf("%d", &type_of_comment);
 
             pfb->type= type_of_comment;

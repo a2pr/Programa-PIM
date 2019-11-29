@@ -20,7 +20,7 @@ int main ()
     users *puser, current_user;
     puser=&current_user;
 
-    clientes *pcliente, cliente ;
+    clientes *pcliente, cliente;
     pcliente= &cliente;
 
     pedidos *pcu_pedido,cu_pedido;
@@ -52,13 +52,13 @@ int main ()
       while(logout==1){
 
         printf("---------Menu------\n");
-       	printf("1- Cadastrar Pedido \n");
-		printf("2- Pedidos \n");
-		printf("3- Promocoes \n");
+       	printf("1- Cadastrar Pedido\n");
+		printf("2- Pedidos\n");
+		printf("3- Promocoes\n");
 		if(puser->user_permissions==0){
-            printf("4- Clientes cadastrados \n");
-            printf("5- Reclama��es e sugestoes \n");
-            printf("6- Estoque \n");
+            printf("4- Clientes cadastrados\n");
+            printf("5- Resenhas\n");
+            printf("6- Estoque\n");
             printf("7- Gerenciamento\n");
 		}
 		printf("8- sair \n");
@@ -73,7 +73,7 @@ int main ()
 			break;
 
 			case 2:
-			    printf("O Cliente esta cadastrado?\n Inserir 0 se n�o ou se � cadastrado inserir CPF: ");
+			    printf("O Cliente esta cadastrado?\n Inserir 0 se nao ou inserir CPF: ");
                 scanf("%s", cpf);
                 if(strcmp(cpf,"0")==0){
                     system("@cls||clear");
@@ -93,42 +93,63 @@ int main ()
 			break;
 
 			case 3:
+
                 pcu_pedido->atendente=*puser;
                 pcu_pedido->sede=cu_sede;
 			    show_promotion(puser, pcliente, pcu_pedido);//change
 			break;
 
 			case 4:
-			    get_clientes(); //for now it will only display clientes
+			     if(puser->user_permissions==0){
+                       get_clientes(); //for now it will only display clientes
+                    }else{
+                    printf("escolha nao aceitada\n");
+                    system("@cls||clear");
+                    getchar();
+                    }
+
 			break;
 
 			case 5:
+			    if(puser->user_permissions==0){
 			    get_or_do_feedback(pcliente);
+			    }else{
+			    printf("escolha nao aceitada\n");
+			    system("@cls||clear");
+			    getchar();}
 			break;
 
             case 6:
+                if(puser->user_permissions==0){
                 show_estoque();
+                }else{
+                printf("escolha nao aceitada\n");
+                system("@cls||clear");
+                getchar();}
 			break;
 
 			case 7:
-			    printf("\n.1 Faturamento\n.2 Sede con mais vendas\n  ");
-                scanf("%d", &optG);
+			    if(puser->user_permissions==0){
+                    printf("\n.1 Faturamento\n.2 Sede con mais vendas\n  ");
+                    scanf("%d", &optG);
 
-                switch(optG){
-                    case 1 :
-                        faturamento();
+                    switch(optG){
+                        case 1 :
+                            faturamento();
+                            break;
+                        case 2 :
+                            vendas();
+                            break;
+                        case 3:
+                            previsao();
+                            break;
+                        default:
+                            printf("escolha nao aceitada\n");
                         break;
-                    case 2 :
-                        vendas();
-                        break;
-                    case 3:
-                        previsao();
-                        break;
-                    default:
-                        printf("op��o nao aceitada\n");
-                    break;
-                }
-
+                    }
+			    }else{printf("escolha nao aceitada\n");
+			    system("@cls||clear");
+			    getchar();}
 			break;
 
 			case 8:
@@ -137,7 +158,7 @@ int main ()
 			break;
 
 			default:
-                printf("op��o nao aceitada\n");
+                printf("escolha nao aceitada\n");
             break;
 
 		}

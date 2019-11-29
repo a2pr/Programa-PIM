@@ -140,7 +140,7 @@ void get_users(users *test, int *n){
 
 }
 
-void get_clientes_db(clientes *test ,int *n){
+void get_clientes_db(clientes *test){
     int i,entryCount;
     char db_name[25]="./db/dbClientes.txt";
     FILE *pdbs;
@@ -168,19 +168,19 @@ void get_clientes_db(clientes *test ,int *n){
         //printf("%i",i);
         //gets CPF length, allocates memory, gets value and nome length
         fscanf(pdbs, "%i", &cpfLen);
-        pclientes[i].CPF= calloc(1,(sizeof(char)*(cpfLen+1)));
+        pclientes[i].CPF= calloc(1,(sizeof(char)*(cpfLen)));
         fscanf(pdbs, "%s %i",pclientes[i].CPF ,&nomeLen);
 
         //gets nome length, allocates memory, gets value and endere�� length
-        pclientes[i].nome= calloc(1,sizeof(char)*(nomeLen+1));
+        pclientes[i].nome= calloc(1,sizeof(char)*(nomeLen));
         fscanf(pdbs, "%s %i",pclientes[i].nome ,&endLen);
 
         //gets enderezo length, allocates memory, gets value and telefone length
-        pclientes[i].enderezo= calloc(1,sizeof(char)*(endLen+3));
-        fgets(pclientes[i].enderezo,endLen+3, pdbs);
+        pclientes[i].enderezo= calloc(1,sizeof(char)*(endLen+1));
+        fgets(pclientes[i].enderezo,endLen+1, pdbs);
         fscanf(pdbs, "%i",&tlfLen);
          //gets telefone length, allocates memory and gets value
-        pclientes[i].telefone= calloc(1,sizeof(char)*(tlfLen+1));
+        pclientes[i].telefone= calloc(1,sizeof(char)*(tlfLen));
         fscanf(pdbs, " %s", pclientes[i].telefone);
         //printf("%i. %i- %s - %s -", i+1, pclientes[i].id, pclientes[i].CPF, pclientes[i].nome );
         //printf(" %s - %s\n", pclientes[i].enderezo, pclientes[i].telefone);
@@ -189,7 +189,6 @@ void get_clientes_db(clientes *test ,int *n){
             test[i]=pclientes[i];
      }
     free(pclientes);
-    *n=entryCount;
     close_db(pdbs);
 
 
@@ -297,13 +296,13 @@ void get_produtos_db(produtos *test ,int *n){
 
 
 bool check_cliente_db(char cpf[], clientes *pcliente){
-    int *plen, i, length;
-    plen=&length;
+    int  i, length;
+    length=get_entrycount(5);
 
     clientes *dbClientes,Clientes[get_entrycount(5)] ;
     dbClientes=&Clientes;
     //getting clientes from database
-    get_clientes_db(dbClientes,plen);
+    get_clientes_db(dbClientes);
 
     for(i=0;i<length-1;i++ ){
             if(strcmp(cpf,dbClientes[i].CPF)==0){
@@ -318,9 +317,6 @@ bool check_cliente_db(char cpf[], clientes *pcliente){
 
 
 void add_clientes_db(clientes *newCliente){
-    if(check_cliente_db(newCliente->CPF, newCliente)){
-        return;
-    }
 
     int entryCount;
     char db_name[2][25]={"./db/dbClientes.txt", "./db/dbClientes_temp.txt"};
@@ -335,58 +331,30 @@ void add_clientes_db(clientes *newCliente){
     //gets entry count in original file
     fscanf(pdbs, "%i", &entryCount);
     //allocates memory for database info
-    clientes *dbClientes= calloc(entryCount+1,sizeof(clientes)* entryCount+1);
-    if( dbClientes ==NULL){
-        printf("Vetor n�o alocado");
-    }
-
-    for(int i=0;i<entryCount;i++){
-         //gets users id
-        fscanf(pdbs, "%i",&dbClientes[i].id);
-        int cpfLen, nomeLen, endLen, tlfLen;
-
-        //gets CPF length, allocates memory, gets value and nome length
-        fscanf(pdbs, "%i", &cpfLen);
-        dbClientes[i].CPF= calloc(1,sizeof(char)*(cpfLen+1));
-        fscanf(pdbs, "%s %i",dbClientes[i].CPF ,&nomeLen);
-
-        //gets nome length, allocates memory, gets value and endere�� length
-        dbClientes[i].nome= calloc(1,sizeof(char)*(nomeLen+1));
-        fscanf(pdbs, "%s %i",dbClientes[i].nome ,&endLen);
-
-        //gets enderezo length, allocates memory, gets value and telefone length
-        dbClientes[i].enderezo= calloc(1,sizeof(char)*(endLen+2));
-        fgets(dbClientes[i].enderezo,endLen+2, pdbs);
-        fscanf(pdbs, "%i",&tlfLen);
-         //gets telefone length, allocates memory and gets value
-        dbClientes[i].telefone= calloc(1,sizeof(char)*(tlfLen+1));
-        fscanf(pdbs, " %s", dbClientes[i].telefone);
-        //printf("%i. %i- %s - %s -", i+1, dbClientes[i].id, dbClientes[i].CPF, dbClientes[i].nome );
-        //printf(" %s - %s\n", dbClientes[i].enderezo, dbClientes[i].telefone);
-    }
+    clientes *dbClientes, Clientes[entryCount+1] ;
+    dbClientes=&Clientes;
+    get_clientes_db(dbClientes);
 
     newCliente[0].id= entryCount+1;
     dbClientes[entryCount]= *newCliente;
 
-    for(int i=0;i<entryCount+1; i++){
-       printf("%i. %i- %s - %s -", i+1, dbClientes[i].id, dbClientes[i].CPF, dbClientes[i].nome );
-    printf(" %s - %s\n", dbClientes[i].enderezo, dbClientes[i].telefone);
-    }
+    /*for(int i=0;i<entryCount+1; i++){
+       printf("%i. %i-%s-%s-", i+1, dbClientes[i].id, dbClientes[i].CPF, dbClientes[i].nome );
+    printf("%s -%s\n", dbClientes[i].enderezo, dbClientes[i].telefone);
+    }*/
     //printf(" %i- %s - %s -", newCliente[0].id, newCliente[0].CPF, newCliente[0].nome );
     //printf(" %s - %s\n", newCliente[0].enderezo, newCliente[0].telefone);
+
     fprintf(pdbs_temp,"%i\n", entryCount+1);
 
     for(int i=0;i<entryCount+1; i++){
-        fprintf(pdbs_temp,"%i %i %s %i %s %i %s %i %s\n",dbClientes[i].id, strlen(dbClientes[i].CPF), dbClientes[i].CPF, strlen(dbClientes[i].nome), dbClientes[i].nome, strlen(dbClientes[i].enderezo), dbClientes[i].enderezo, strlen(dbClientes[i].telefone), dbClientes[i].telefone);
+        fprintf(pdbs_temp,"%i %i %s %i %s %i%s %i %s\n",dbClientes[i].id, strlen(dbClientes[i].CPF), dbClientes[i].CPF, strlen(dbClientes[i].nome), dbClientes[i].nome, strlen(dbClientes[i].enderezo), dbClientes[i].enderezo, strlen(dbClientes[i].telefone), dbClientes[i].telefone);
     }
-
-
     close_db(pdbs);
     close_db(pdbs_temp);
     remove(db_name[0]);
     rename(db_name[1], db_name[0]);
     free(dbClientes);
-    printf("success!");
 }
 
 void get_items_db(items *test,int *n, int opt){
@@ -612,11 +580,11 @@ produtos get_produtos_by_id(int id ){
 
 clientes get_clientes_cpf( char cpf[]){
     int *plen=NULL,len,i;
-    plen=&len;
+    len=get_entrycount(5);
     clientes *ptest=NULL, test[get_entrycount(5)], fail;
     ptest=&test;
 
-    get_clientes_db(ptest,plen);
+    get_clientes_db(ptest);
 
     //printf("cpf: %s\n",cpf);
     for(i=0; i<len;i++){
@@ -823,7 +791,7 @@ void add_pedidos( pedidos *newPedido, int *itemsN){
   }
   //printf("%i\n",*itemsN);
     itemsLenfinal[entryCount]= *itemsN;
-    printf("new pedido length %i\n",itemsLenfinal[entryCount+1] );
+    //printf("new pedido length %i\n",itemsLenfinal[entryCount+1] );
     ppedidos[entryCount]=*newPedido;
     //printf("%i. cpf: %s - prize: %.2f -motoqueiro:%s -atendente: %s - sede: %i -status:%i- time:  \n", entryCount+1,  ppedidos[entryCount].cliente.CPF, ppedidos[entryCount].prize, ppedidos[entryCount].motoqueiro.nome, ppedidos[entryCount].atendente.login, ppedidos[entryCount].sede, ppedidos[entryCount].cancelado);
 
@@ -852,7 +820,7 @@ void add_pedidos( pedidos *newPedido, int *itemsN){
     remove(db_name[0]);
     rename(db_name[1], db_name[0]);
 
-    printf("success!");
+    printf("Success pedido adicionado a base de dados!");
 }
 
 void update_items_db(items *test ,int *n){
@@ -864,8 +832,8 @@ void update_items_db(items *test ,int *n){
     if(access(db_name[0],F_OK)==0){
         pdbs=fopen(db_name[0],"r");
         pdbs_temp=fopen(db_name[1],"w");
-        printf("\n%s was open! \n", db_name[0]);
-        printf("\n%s was created! \n", db_name[1]);
+        //printf("\n%s was open! \n", db_name[0]);
+        //printf("\n%s was created! \n", db_name[1]);
     }
     fscanf(pdbs, "%i", &entryCount);
     items *pItems=NULL, dbItems[entryCount];
@@ -917,7 +885,7 @@ void update_items_db(items *test ,int *n){
     close_db(pdbs_temp);
     remove(db_name[0]);
     rename(db_name[1], db_name[0]);
-    printf("Updated item estoque!");
+    printf("Updated Menu estoque!\n");
 }
 
 void update_produtos_db(items *test ,int *n){
@@ -929,8 +897,8 @@ void update_produtos_db(items *test ,int *n){
     if(access(db_name[0],F_OK)==0){
         pdbs=fopen(db_name[0],"r");
         pdbs_temp=fopen(db_name[1],"w");
-        printf("\n%s was open! \n", db_name[0]);
-        printf("\n%s was created! \n", db_name[1]);
+        //printf("\n%s was open! \n", db_name[0]);
+        //printf("\n%s was created! \n", db_name[1]);
     }
     fscanf(pdbs, "%i", &entryCount);
     produtos *pprodutos=NULL, dbprodutos[entryCount];
@@ -981,7 +949,7 @@ void update_produtos_db(items *test ,int *n){
     close_db(pdbs_temp);
     remove(db_name[0]);
     rename(db_name[1], db_name[0]);
-    printf("Updated estoque!");
+    printf("Updated estoque!\n");
 
 }
 
