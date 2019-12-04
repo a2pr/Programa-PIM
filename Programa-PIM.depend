@@ -13,7 +13,7 @@
 	"memory.h"
 	"perdas.h"
 
-1574978919 d:\documents\uni\2 periodo\pim\programa-pim\functions.h
+1575430862 d:\documents\uni\2 periodo\pim\programa-pim\functions.h
 	"types.h"
 	"faturamento.h"
 	"functions.h"
@@ -29,7 +29,7 @@
 	"types.h"
 	"database_implementation.h"
 
-1574983384 d:\documents\uni\2 periodo\pim\programa-pim\database_implementation.h
+1575430724 d:\documents\uni\2 periodo\pim\programa-pim\database_implementation.h
 	"functions.h"
 	<unistd.h>
 	"types.h"

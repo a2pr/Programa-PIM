@@ -155,7 +155,7 @@ void choose_bebida(pedidos *ppedido, int *qtd_T ){
     int *plen, i,j,used, opt, Qtd, tamanho,  lenght,lenght_total;
     plen=&lenght;
 
-    items *dbBebidas, Bebidas[get_entrycount(6)], after;
+    items *dbBebidas, Bebidas[get_entrycount(1)], after;
     dbBebidas=&Bebidas;
     get_items_db(dbBebidas,plen,2);
 
@@ -247,12 +247,9 @@ void cadastrar_cliente(clientes *pcliente, char cpf[]){
     scanf("%s", temp_nome);
     pcliente->nome=malloc(sizeof(char)*(strlen(temp_nome)+1));
     strcpy(pcliente->nome, temp_nome);
-
-
-
-
     printf("\nTelefone do cliente:\n");
     scanf("%s", temp_tel);
+    temp_end[0]="\0";
     printf("\nCPE do Endereço do cliente: \n");
     scanf("%s", temp_end);
 
@@ -363,7 +360,8 @@ void cadastrar_pedido(users *atendente, clientes *pcliente,  pedidos *ppedido){
         printf("Cliente %s asignado !\n", ppedido->cliente.nome);
     }else{
         cadastrar_cliente(pcliente, cpf);
-        printf("\n cliente: %s cpf: %s \n", pcliente->nome, pcliente->CPF);
+        ppedido->cliente= *pcliente;
+        printf("\n cliente: %s cpf: %s cadastrado\n", pcliente->nome, pcliente->CPF);
 
     }
 
@@ -415,7 +413,7 @@ void check_for_pedido(clientes *pcliente, char cpf[]){
         }
     }
     free(plenI);
-    free(dbPedidos);
+
     printf("\nPress ENTER key to go back to the menu\n");
     getch();
     system("@cls||clear");
@@ -460,6 +458,7 @@ void cadastrar_pedido_promotion(users *atendente, clientes *pcliente,  pedidos *
         printf("Cliente %s asignado !\n", ppedido->cliente.nome);
     }else{
         cadastrar_cliente(pcliente, cpf);
+        ppedido->cliente= *pcliente;
         printf("\n cliente: %s cpf: %s \n", pcliente->nome, pcliente->CPF);
 
     }

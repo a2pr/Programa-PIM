@@ -173,12 +173,12 @@ void get_clientes_db(clientes *test){
 
         //gets nome length, allocates memory, gets value and endere�� length
         pclientes[i].nome= calloc(1,sizeof(char)*(nomeLen));
-        fscanf(pdbs, "%s %i",pclientes[i].nome ,&endLen);
+        fscanf(pdbs, "%s %i ",pclientes[i].nome ,&endLen);
 
         //gets enderezo length, allocates memory, gets value and telefone length
         pclientes[i].enderezo= calloc(1,sizeof(char)*(endLen+1));
         fgets(pclientes[i].enderezo,endLen+1, pdbs);
-        fscanf(pdbs, "%i",&tlfLen);
+        fscanf(pdbs, " %i",&tlfLen);
          //gets telefone length, allocates memory and gets value
         pclientes[i].telefone= calloc(1,sizeof(char)*(tlfLen));
         fscanf(pdbs, " %s", pclientes[i].telefone);
@@ -348,7 +348,9 @@ void add_clientes_db(clientes *newCliente){
     fprintf(pdbs_temp,"%i\n", entryCount+1);
 
     for(int i=0;i<entryCount+1; i++){
-        fprintf(pdbs_temp,"%i %i %s %i %s %i%s %i %s\n",dbClientes[i].id, strlen(dbClientes[i].CPF), dbClientes[i].CPF, strlen(dbClientes[i].nome), dbClientes[i].nome, strlen(dbClientes[i].enderezo), dbClientes[i].enderezo, strlen(dbClientes[i].telefone), dbClientes[i].telefone);
+        fprintf(pdbs_temp,"%i %i %s %i %s ",dbClientes[i].id, strlen(dbClientes[i].CPF), dbClientes[i].CPF, strlen(dbClientes[i].nome), dbClientes[i].nome);
+        fprintf(pdbs_temp,"%i",strlen(dbClientes[i].enderezo));
+        fprintf(pdbs_temp," %s %i %s\n", dbClientes[i].enderezo, strlen(dbClientes[i].telefone), dbClientes[i].telefone);
     }
     close_db(pdbs);
     close_db(pdbs_temp);
@@ -705,7 +707,6 @@ void get_pedidos(pedidos *test ,int *n, int *lenItem[]){
     for(i=0;i<entryCount;i++){
         dbpedidos[i]=ended[i];
       }
-    free(ppedidos);
     close_db(pdbs);
 
 }
@@ -797,7 +798,7 @@ void add_pedidos( pedidos *newPedido, int *itemsN){
 
     fprintf(pdbs_temp,"%i\n", entryCount+1);
 
-    for(int i=0;i<entryCount+1; i++){
+for(int i=0;i<entryCount+1; i++){
         char time_d[10];
         char time_m[10];
         char time_y[10];
